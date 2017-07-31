@@ -1,0 +1,32 @@
+set backspace=indent,eol,start
+set linebreak
+set wrap
+set paste
+set nocompatible
+set showmatch
+set number
+set ignorecase
+set smarttab
+set incsearch
+syntax on
+
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+set softtabstop=2
+
+:let mapleader = ","
+map <Leader>n :set number! number?<CR>
+map <Leader>l :set list! list?<CR>
+
+autocmd BufRead,BufNewFile *.json setfiletype ruby
+autocmd BufRead,BufNewFile *.erb setfiletype ruby
+autocmd FileType ruby set tabstop=2
+autocmd FileType perl set tabstop=2
+autocmd FileType php set tabstop=2
+autocmd FileType java set tabstop=2
+
+filetype indent plugin on
+
+colorscheme slate

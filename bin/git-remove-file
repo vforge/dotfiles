@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#-------------------------------------------------------------------------------
+# Name      :  git-remove-file.sh
+# Written By:  David Underhill, with modifications by, Bryan K. Johns, K4GDW
+# Purpose   :  Script  to  permanently  delete  files / folders  from  your  git
+#           :  repository. To use it, cd to the root of your repository and then
+#           :  run the script as shown.
+# Calls     :  ./git-sanitize.sh path1 path2...
+# Comments  :  This is my version of the git-delete-history script found here:
+#           :  http://k4gdw.us/git-sanitize
+# Date/Time :  Thursday, September 22, 2016  11:17:38 AM
+#-------------------------------------------------------------------------------
+set -o errexit
+
+if [ $# -eq 0 ]; then
+    echo "Error: Must supply at least one file path to be scrubbed from the repo."
+    exit 1
+fi
+
+# make sure we're at the root of git repository
+if [ ! -d .git ]; then
+    echo "Error: Must run this script from the root of a git repository"
+    exit 1
+fi
+
+# Remove all paths passed as arguments from the history of the
+# repository.
+files=$@
+git filter-branch --index-filter \
+    "git rm -rf --cached --ignore-unmatch $files" \
+     HEAD
+
+# Remove the temporary history git-filter-branch otherwise it gets
+# left behind for a long time.
+rm -rf .git/refs/original/ && git reflog expire --expire=now --all && git gc --aggressive --prune=now

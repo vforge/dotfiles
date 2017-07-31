@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# Create a CurseForge remote to the git
+#
+
+echo "- Adding CurseForge remote repository as $1"
+git remote add curseforge git@git.curseforge.net:wow/$1/mainline.git
+
+echo "- Pushing master to CurseForge repository"
+git push curseforge master

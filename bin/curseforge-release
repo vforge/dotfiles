@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Quick release of an WoW Addon to CurseForge and GitHub
+#
+
+echo "- Creating release tag $1"
+git tag -a $1 -m "Release $1"
+
+echo "- Pushing to origin"
+git push --tags
+
+echo "- Pushing to CurseForge"
+git push curseforge --tags

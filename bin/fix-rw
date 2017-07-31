@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Make folders traversable and read/write
+find . -t d -exec chmod a+rwx
+ 
+# Make files read/write
+find . -t f -exec chmod a+rw

@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Autoupdate .dotfiles
+#
+
+echo "- Autoupdating .dotfiles"
+cd ~/.dotfiles
+git upz
