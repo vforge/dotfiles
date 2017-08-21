@@ -5,4 +5,4 @@
 
 echo "- Autopushing .atom"
 cd ~/.atom
-g upz
+git upz

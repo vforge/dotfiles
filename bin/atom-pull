@@ -5,5 +5,5 @@
 
 echo "- Autopulling .atom"
 cd ~/.atom
-g cl
-g pl
+git cl
+git pl
