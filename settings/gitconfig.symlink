@@ -1,0 +1,132 @@
+[user]
+	name = Bartosz V. Bentkowski
+	email = vforge@users.noreply.github.com
+	signingkey = A9E7426B
+
+[push]
+  default = simple
+
+[core]
+  autocrlf = input
+  editor = vim
+  excludesfile = ~/.gitignore-global
+  ignorecase = false
+  # symlinks = false
+  safecrlf = false
+
+[github]
+  user = vforge
+
+[hub]
+  protocol = https
+
+[alias]
+  clone = clone --recursive
+
+  co = checkout
+  d = diff
+  dc = diff --cached
+  f = fetch
+  pu = push
+  puf = push -f
+  new = checkout -b
+  sync = submodule foreach git pull origin master
+
+  cc = commit -m
+  c = commit -S -m
+  l = log --stat -C
+  m = merge --no-ff
+  pl = pull --rebase
+  s = status -sb
+  fp = fetch --prune
+
+  #
+  unamend = reset --soft HEAD@{1}
+  uncommit = reset --soft HEAD^
+  untrack = rm --cache --
+  unstage = reset HEAD --
+
+  sub-add = submodule add
+  sub-update = submodule update --remote
+
+  # Get the current branch name (not so useful in itself, but used in
+  # other aliases)
+  branch-name = !git rev-parse --abbrev-ref HEAD && :
+
+  lp = log -p
+  ld = log --pretty=format:'%h %Cblue%ad%Creset %an %Cgreen%s%Creset' --date=relative
+  lg = log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+
+  a = !echo "- Adding all changes" && git add -A && git s && :
+  cl = !echo "- Cleaning up current branch" && git clean -df && git reset HEAD --hard && :
+  ac = !echo "- Adding all changes and commit" && git add -A && git c
+  acp = !echo "- Adding all changes and pushing ($1)" && git add -A && git c "$1" && git pu && :
+  swap = !echo "- Swapping to $1" && git f && git co $1 && git pl && :
+  swapf = !git cl && git swap
+
+  # Push the current branch to the remote "origin", and set it to track
+  # the upstream branch
+  publish = !git push -u origin $(git branch-name) && :
+  # Delete the remote version of the current branch
+  unpublish = !git push origin :$(git branch-name) && :
+
+  # Delete a branch and recreate it from master — useful if you have, say,
+  # a development branch and a master branch and they could conceivably go
+  # out of sync
+  recreate = "!f() { [[ -n $@ ]] && git checkout \"$@\" && git unpublish && git checkout master && git branch -D \"$@\" && git checkout -b \"$@\" && git publish; }; f"
+
+  ff = !echo "- Fast-forward!" && git pl && git fp && :
+  upz = !echo "- Lazy-update" && git add -A && git c update_"$(date +%s)" && git pu && :
+
+  dev = !git swap dev && :
+  devf = !git cl && git dev && git ff && :
+  master = !git swap master && :
+  masterf = !git cl && git master && git ff && :
+
+  rb = !git rebase origin/$1 && :
+  rbm = !git rb master && :
+  rc = !git add . && git rebase --continue && :
+
+  z = !echo "- Zipping to dist/$1-$2.zip" && mkdir -p dist && git archive -o dist/$1-$2.zip --prefix=$1/ HEAD && :
+
+  promote = !$DOTFILES/bin/git-promote
+  wtf     = !$DOTFILES/bin/git-wtf
+  rank-contributors = !$DOTFILES/bin/git-rank-contributors
+  count   = !git shortlog -sn
+  delete-merged = !$DOTFILES/bin/git-delete-local-merged
+
+[color]
+  branch = auto
+  diff = auto
+  interactive = true
+  status = auto
+  ui = auto
+
+[pager]
+  status = true
+
+[apply]
+  whitespace = nowarn
+
+[mergetool]
+  keepBackup = false
+
+[difftool]
+  prompt = false
+
+[help]
+  autocorrect = 1
+
+[push]
+  default = simple
+
+[rebase]
+  autosquash = true
+
+[branch]
+  autosetuprebase = always
+
+[filter "lfs"]
+  clean = git-lfs clean %f
+  smudge = git-lfs smudge %f
+  required = true
