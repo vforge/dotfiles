@@ -12,7 +12,7 @@ zplug "zsh-users/zsh-syntax-highlighting"
 zplug "chrissicool/zsh-256color", from:github
 
 zplug "djui/alias-tips", from:github
-zplug "unixorn/git-extra-commands", from:github
+# zplug "unixorn/git-extra-commands", from:github
 zplug "supercrabtree/k"
 zplug "unixorn/warhol.plugin.zsh"
 zplug "peterhurford/git-it-on.zsh", from:github
