@@ -54,6 +54,7 @@ cask '1password'
 cask 'hyperswitch'
 cask 'hyperdock'
 cask 'shiftit'
+cask 'bartender'
 # cask 'trailer' NOT AS USEFUL FOR NOW
 # cask 'alfred' let's see how we handle spotlight
 # cask 'clipmenu'
