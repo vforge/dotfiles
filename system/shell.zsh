@@ -18,6 +18,7 @@ zplug "unixorn/warhol.plugin.zsh"
 zplug "peterhurford/git-it-on.zsh", from:github
 zplug "skx/sysadmin-util"
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "plugins/sublime", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 
 zplug "RobSis/zsh-completion-generator"
 zplug "zsh-users/zsh-history-substring-search"
