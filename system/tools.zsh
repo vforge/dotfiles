@@ -9,3 +9,8 @@ if (( $+commands[rbenv] ))
 then
   eval "$(rbenv init -)"
 fi
+
+# Check if nvm is installed
+if [[ ! -d /usr/local/opt/nvm/nvm.sh ]]; then
+  source /usr/local/opt/nvm/nvm.sh
+fi
