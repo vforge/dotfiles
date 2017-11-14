@@ -7,6 +7,12 @@ fi
 # Essential
 source ~/.zplug/init.zsh
 
+# nvm
+zplug "lukechilds/zsh-nvm"
+
+#
+zplug "djui/alias-tips", from:github
+
 # Make sure to use double quotes to prevent shell expansion
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "chrissicool/zsh-256color", from:github
@@ -24,6 +30,8 @@ zplug "RobSis/zsh-completion-generator"
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
+
+zplug "maxmellon/yarn_completion"
 
 # theme
 zplug "mafredri/zsh-async", from:github

@@ -10,6 +10,10 @@ HISTFILE=~/.zsh_history
 HISTSIZE=1000000000
 SAVEHIST=1000000000
 
+# nvm options
+export NVM_DIR="$HOME/.nvm"
+# export NVM_LAZY_LOAD=true :(
+
 # zsh options
 # setopt NO_BG_NICE # don't nice background tasks
 # setopt NO_HUP

@@ -37,7 +37,8 @@ brew 'unrar'
 brew 'wget'
 brew 'youtube-dl'
 brew 'httpie'
-brew 'nvm'
+# brew 'nvm' # zsh-nvm should handle it
+brew 'yarn', args: ['without-node']
 brew 'midnight-commander'
 # brew 'neovim'
 brew 'htop'
