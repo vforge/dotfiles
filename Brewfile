@@ -17,6 +17,7 @@ brew 'go'
 brew 'elixir'
 brew 'gnupg'
 brew 'grc'
+brew 'tldr'
 brew 'mas' # MacOS Amphetamine, Battery Health 2
 # brew 'qt' not working with newest macos
 brew 'imagemagick'
@@ -95,10 +96,10 @@ cask 'vlc'
 cask 'spotify'
 cask 'yacreader'
 cask 'spotify'
-cask 'gimp'
-cask 'inkscape'
-cask 'libreoffice'
-cask 'xnviewmp'
+# cask 'gimp'
+# cask 'inkscape'
+# cask 'libreoffice'
+# cask 'xnviewmp'
 # cask 'beardedspice'
 # cask 'helium' it's not helium browser
 # gaming
