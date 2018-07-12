@@ -32,6 +32,7 @@ zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
 
 zplug "maxmellon/yarn_completion"
+zplug "dijitalmunky/nvm-auto"
 
 # theme
 zplug "mafredri/zsh-async", from:github
