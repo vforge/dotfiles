@@ -30,6 +30,7 @@ brew 'elixir'
 brew 'gnupg'
 brew 'grc'
 brew 'tldr'
+brew 'jq'
 brew 'mas' # MacOS Amphetamine, Battery Health 2
 # brew 'qt' not working with newest macos
 brew 'imagemagick'
@@ -85,6 +86,8 @@ cask 'bartender'
 cask 'veracrypt'
 cask 'sequel-pro'
 cask 'nordvpn'
+cask 'runjs'
+cask 'notable'
 # cask 'trailer' NOT AS USEFUL FOR NOW
 # cask 'alfred' let's see how we handle spotlight
 # cask 'clipmenu'
@@ -105,7 +108,7 @@ cask 'ccleaner'
 cask 'lantern'
 # browsers / IDE
 # cask 'atom-beta'
-cask 'atom'
+# cask 'atom'
 cask 'sublime-text'
 cask 'visual-studio-code'
 # cask 'firefox'
