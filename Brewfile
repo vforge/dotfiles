@@ -23,6 +23,7 @@ cask 'xquartz'
 cask 'java'
 
 # essentials
+brew 'nmap'
 brew 'ack'
 brew 'coreutils'
 brew 'go'
