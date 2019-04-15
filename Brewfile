@@ -32,6 +32,7 @@ brew 'gnupg'
 brew 'grc'
 brew 'tldr'
 brew 'jq'
+brew 'pssh'
 brew 'mas' # MacOS Amphetamine, Battery Health 2
 # brew 'qt' not working with newest macos
 brew 'imagemagick'
