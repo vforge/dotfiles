@@ -1,9 +1,9 @@
 cask_args appdir: '/Applications'
 
-tap 'caskroom/cask'
-tap 'caskroom/versions'
+tap 'homebrew/cask'
+tap 'homebrew/cask-versions'
 tap 'homebrew/bundle'
-tap 'homebrew/games'
+# tap 'homebrew/games'
 # tap 'neovim/neovim'
 #
 # ack			gdbm			httpie			libgcrypt		libxml2			pcre			roundup			watchman
@@ -23,6 +23,8 @@ cask 'xquartz'
 cask 'java'
 
 # essentials
+# brew 'pscp' # ??
+brew 'pssh'
 brew 'nmap'
 brew 'ack'
 brew 'coreutils'
@@ -106,8 +108,8 @@ cask 'dropbox'
 cask 'kap'
 cask 'the-unarchiver'
 # cask 'fitbit-connect' # NOT USED
-cask 'diskwave'
-cask 'ccleaner'
+# cask 'diskwave'
+# cask 'ccleaner'
 cask 'lantern'
 # browsers / IDE
 # cask 'atom-beta'
@@ -141,8 +143,8 @@ cask 'spotify'
 # cask 'beardedspice'
 # cask 'helium' it's not helium browser
 # gaming
-cask 'steam'
-cask 'battle-net'
+# cask 'steam'
+# cask 'battle-net'
 # other
 cask 'handbrake'
 cask 'transmission'
