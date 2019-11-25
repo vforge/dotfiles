@@ -5,3 +5,4 @@ atom.symlink/blob-store
 atom.symlink/compile-cache/
 atom.symlink/storage
 atom.symlink/recovery
+.history/
