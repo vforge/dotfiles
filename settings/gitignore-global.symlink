@@ -9,6 +9,9 @@ Thumbs.db
 *~
 *.swp
 
+# local history
+.history/
+
 # IDE
 .idea/
 *.sublime-*
