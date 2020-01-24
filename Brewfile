@@ -20,7 +20,7 @@ tap 'homebrew/bundle'
 
 # sigh
 cask 'xquartz'
-cask 'java'
+# cask 'java'
 
 # essentials
 # brew 'pscp' # ??
@@ -56,7 +56,7 @@ brew 'wget'
 brew 'youtube-dl'
 brew 'httpie'
 # brew 'nvm' # zsh-nvm should handle it
-brew 'yarn', args: ['without-node']
+# brew 'yarn', args: ['without-node']
 brew 'midnight-commander'
 # brew 'neovim'
 brew 'htop'
@@ -105,7 +105,7 @@ cask 'iterm2'
 # cask 'keepingyouawake'
 cask 'appcleaner'
 cask 'dropbox'
-cask 'kap'
+# cask 'kap'
 cask 'the-unarchiver'
 # cask 'fitbit-connect' # NOT USED
 # cask 'diskwave'
