@@ -132,4 +132,4 @@
   required = true
 	process = git-lfs filter-process
 [gpg]
-	program = gpg
+	program = gpg2
