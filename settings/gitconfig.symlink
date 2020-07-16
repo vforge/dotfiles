@@ -133,3 +133,5 @@
 	process = git-lfs filter-process
 [gpg]
 	program = gpg2
+[submodule]
+	recurse = true
