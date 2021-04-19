@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# https://alvinalexander.com/linux-unix/how-to-make-offline-mirror-copy-website-with-wget/
+
+if [[ -z "$1" ]]; then
+    echo "usage: mirror [uri]"
+    exit 1
+fi
+
+URI=$1
+wget --mirror --convert-links --html-extension ${URI}

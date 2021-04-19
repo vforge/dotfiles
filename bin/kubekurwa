@@ -1,0 +1,130 @@
+#!/bin/bash
+
+# https://gist.github.com/mszabo-wikia/ef68952d5c4f4ef34bbb3c2b713f9d0e
+
+if [[ -z "$1" ]] || [[ -z "$2" ]]; then
+    echo "usage: kubekurwa [context] [command] [...arguments]"
+    exit 1
+fi
+
+CONTEXT=kube-$1
+COMMAND=$2
+
+NAMESPACE=prod
+
+case ${CONTEXT} in
+kube-sjc-prod) NAMESPACE=prod;;
+kube-res-prod) NAMESPACE=prod;;
+kube-poz-prod) NAMESPACE=prod;;
+kube-poz-dev) NAMESPACE=dev;;
+kube-sjc-dev) NAMESPACE=dev;;
+kube-res-dev) NAMESPACE=dev;;
+esac
+
+case ${COMMAND} in
+    cokurwa)
+        APP=$3
+        if [[ -n "${APP}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} get pods -l app=${APP} -o=wide
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [app name]"
+            exit 1
+        fi
+    ;;
+    sorrykurwa)
+        DEPLOY_NAME=$3
+        if [[ -n "${DEPLOY_NAME}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} rollout undo deployment/${DEPLOY_NAME}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [deployment name]"
+            exit 1
+        fi
+    ;;
+    wyjebpod)
+        POD=$3
+        if [[ -n "${POD}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} delete pod ${POD}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [pod name]"
+            exit 1
+        fi
+    ;;
+    wyjebapp)
+        APP=$3
+        if [[ -n "${APP}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} delete pods -l app=${APP}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [app name]"
+            exit 1
+        fi
+    ;;
+    wypierdolharmonogram)
+        JOB=$3
+        if [[ -n "${JOB}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} delete cronjob/${JOB}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [app name]"
+            exit 1
+        fi
+    ;;
+    wyjebappwchuj)
+        APP=$3
+        if [[ -n "${APP}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} delete ingress,service,deployment,servicemonitor,prometheusrule -l app=${APP}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [app name]"
+            exit 1
+        fi
+    ;;
+    scalekurwa)
+        DEPLOY_NAME=$3
+        REPLICAS=$4
+        if [[ -n "${DEPLOY_NAME}" ]] && [[ -n "${REPLICAS}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} scale deployment/${DEPLOY_NAME} --replicas ${REPLICAS}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [deployment name] [replicas number]"
+            exit 1
+        fi
+    ;;
+    drzewokurwa)
+        APP=$3
+        if [[ -n "${APP}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} logs -l app=${APP}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [app name]"
+            exit 1
+        fi
+    ;;
+    gdziekurwa)
+        DEPLOY_NAME=$3
+        if [[ -n "${DEPLOY_NAME}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} rollout status deployment/${DEPLOY_NAME}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [deployment name]"
+            exit 1
+        fi
+    ;;
+    szpachlakurwa)
+        DEPLOY_NAME=$3
+        PATCH_FILE=$4
+        if [[ -n "${DEPLOY_NAME}" ]] && [[ -n "${PATCH_FILE}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} patch deployment ${DEPLOY_NAME} --patch "$(cat $PATCH_FILE)"
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [deployment name] [path to patch file]"
+            exit 1
+        fi
+    ;;
+    odnowakurwa)
+        DEPLOY_NAME=$3
+        if [[ -n "${DEPLOY_NAME}" ]]; then
+            kubectl -n ${NAMESPACE} --context ${CONTEXT} rollout restart deployment/${DEPLOY_NAME}
+        else
+            echo "usage: kubekurwa [context] ${COMMAND} [deployment name]"
+            exit 1
+        fi
+    ;;
+    *)
+        echo "unrecognized command: ${COMMAND} - co kurwa robisz?"
+        exit 1
+    ;;
+esac

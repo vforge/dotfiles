@@ -1,7 +1,7 @@
 [user]
 	name = Bartosz V. Bentkowski
 	email = vforge@users.noreply.github.com
-	signingkey = A9E7426B
+#	signingkey = A9E7426B
 
 [push]
   default = simple
@@ -133,5 +133,5 @@
 	process = git-lfs filter-process
 [gpg]
 	program = gpg2
-[submodule]
-	recurse = true
+# [submodule]
+# 	recurse = true
