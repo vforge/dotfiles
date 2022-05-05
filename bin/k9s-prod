@@ -1,0 +1,2 @@
+#!/bin/sh
+k9s -n prod --context=kube-sjc-prod
