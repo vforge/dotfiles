@@ -20,6 +20,7 @@ source $DOTFILES/system/aliases.zsh
 source $DOTFILES/system/cd.zsh
 source $DOTFILES/system/config.zsh
 source $DOTFILES/system/tools.zsh
+source $DOTFILES/system/exports.zsh
 
 # end with shell (zplug/zgen/antigen/etc)
 source $DOTFILES/system/shell.zsh
