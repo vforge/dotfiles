@@ -124,7 +124,7 @@
   autosquash = true
 
 [branch]
-  autosetuprebase = always
+#   autosetuprebase = always
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
