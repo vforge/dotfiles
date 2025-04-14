@@ -80,6 +80,8 @@
 
   dev = !git swap dev && :
   devf = !git cl && git dev && git ff && :
+  main = !git swap main && :
+  mainf = !git cl && git main && git ff && :
   master = !git swap master && :
   masterf = !git cl && git master && git ff && :
 

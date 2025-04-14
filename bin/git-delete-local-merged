@@ -7,4 +7,4 @@
 #
 # git branch -d `git branch --merged | grep -v '^*' | grep -v 'master' | tr -d '\n'`
 
-git branch --merged | egrep -v "(^\*|master|dev)" | xargs git branch -d
+git branch --merged | egrep -v "(^\*|master|dev|main)" | xargs git branch -d

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Usage: git-empty-commit
+# Creates empty commit.
+
+git commit --allow-empty -m "Empty commit"
