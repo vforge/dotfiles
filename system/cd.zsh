@@ -3,6 +3,9 @@ cdpath=(.
   ~/Dropbox/Development/vforge
   ~/Dropbox/Development
   ~/Software
+  ~/Developer
+  ~/Developer/wikia
+  ~/Developer/vforge
   ~/Code
   ~/Work
   /usr/wikia
