@@ -61,6 +61,10 @@ brew 'midnight-commander'
 # brew 'neovim'
 brew 'htop'
 
+# zoxide and fuzzy z finder
+brew 'zoxide'
+brew 'fzf'
+
 # developing
 # brew 'php71'
 # brew 'composer'
