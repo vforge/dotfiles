@@ -14,6 +14,9 @@ SAVEHIST=1000000000
 export NVM_DIR="$HOME/.nvm"
 # export NVM_LAZY_LOAD=true :(
 
+# https://nx.dev/recipes/running-tasks/terminal-ui
+export NX_TUI=false
+
 # zsh options
 # setopt NO_BG_NICE # don't nice background tasks
 # setopt NO_HUP
