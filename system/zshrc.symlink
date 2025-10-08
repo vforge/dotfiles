@@ -21,6 +21,7 @@ source $DOTFILES/system/cd.zsh
 source $DOTFILES/system/config.zsh
 source $DOTFILES/system/tools.zsh
 source $DOTFILES/system/exports.zsh
+source $DOTFILES/system/nvm-use.zsh
 
 # end with shell (zplug/zgen/antigen/etc)
 source $DOTFILES/system/shell.zsh
@@ -32,7 +33,7 @@ if [ -f '/Users/v/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/v/google-clou
 if [ -f '/Users/v/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/v/google-cloud-sdk/completion.zsh.inc'; fi
 
 # pnpm
-export PNPM_HOME="/Users/v/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
