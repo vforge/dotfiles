@@ -23,10 +23,7 @@ source $DOTFILES/system/tools.zsh
 source $DOTFILES/system/exports.zsh
 source $DOTFILES/system/nvm-use.zsh
 
-# starship config
-export STARSHIP_CONFIG="$HOME/.starship.toml"
-
-# end with shell (zinit)
+# end with shell (zplug/zgen/antigen/etc)
 source $DOTFILES/system/shell.zsh
 
 # Google Cloud SDK

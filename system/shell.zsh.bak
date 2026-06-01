@@ -7,6 +7,9 @@ if [[ ! -f "$ZINIT_HOME/zinit.git/zinit.zsh" ]]; then
 fi
 source "$ZINIT_HOME/zinit.git/zinit.zsh"
 
+# Light-mode for faster loading
+zinit light-mode
+
 # Core plugins
 zinit light "marlonrichert/zsh-autocomplete"  # replaces autosuggestions + history-search + completions
 zinit light "zsh-users/zsh-completions"
@@ -14,9 +17,6 @@ zinit light "djui/alias-tips"
 
 # Syntax highlighting (loaded last for correct priority)
 zinit light "zsh-users/zsh-syntax-highlighting"
-
-# Directory jumper - tracks frequently visited dirs, fuzzy match + tab complete
-zinit light "rupa/z"
 
 # Navigation & productivity
 zinit light "supercrabtree/k"  # search git log by keyword

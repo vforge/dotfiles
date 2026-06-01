@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: $(basename "$0") user@host[:/remote/path] [additional pi args...]" >&2
+  echo "Example: $(basename "$0") dev@mybox:/srv/app" >&2
+  exit 1
+fi
+
+remote="$1"
+shift || true
+
+exec pi --ssh "$remote" "$@"

@@ -61,6 +61,9 @@ brew 'midnight-commander'
 # brew 'neovim'
 brew 'htop'
 
+# shell & prompt
+brew 'starship'  # cross-shell prompt (replaces pure)
+
 # zoxide and fuzzy z finder
 brew 'zoxide'
 brew 'fzf'

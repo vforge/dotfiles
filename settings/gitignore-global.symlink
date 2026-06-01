@@ -20,3 +20,5 @@ Thumbs.db
 
 # cache
 .sass-cache
+
+**/.claude/settings.local.json
