@@ -34,7 +34,7 @@
 
   cc = commit -m
   c = commit -S -m
-	today = !git add -A && git commit -m \"chore: $(date +%Y%m%d%H%M%S)\"
+	today = !git add -A && git commit -m \"chore: $(date +%Y%m%d%H%M%S)\" && git push
   l = log --stat -C
   m = merge --no-ff
   pl = pull --rebase
