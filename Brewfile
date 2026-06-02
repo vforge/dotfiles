@@ -34,13 +34,12 @@ brew 'gnupg'
 brew 'grc'
 brew 'tldr'
 brew 'jq'
-brew 'pssh'
 brew 'mas' # MacOS Amphetamine, Battery Health 2
 # brew 'qt' not working with newest macos
 brew 'imagemagick'
 brew 'jp2a'
 brew 'libav'
-brew 'libcaca', args: ['with-imlib2']
+brew 'libcaca'
 brew 'libgit2'
 brew 'openssl'
 brew 'readline'
@@ -53,7 +52,7 @@ brew 'spaceman-diff'
 brew 'spark'
 brew 'unrar'
 brew 'wget'
-brew 'youtube-dl'
+brew 'yt-dlp'
 brew 'httpie'
 # brew 'nvm' # zsh-nvm should handle it
 # brew 'yarn', args: ['without-node']
@@ -63,6 +62,8 @@ brew 'htop'
 
 # shell & prompt
 brew 'starship'  # cross-shell prompt (replaces pure)
+brew 'gh'        # GitHub CLI
+brew 'rg'        # ripgrep
 
 # zoxide and fuzzy z finder
 brew 'zoxide'
@@ -95,10 +96,9 @@ cask 'hyperdock'
 cask 'shiftit'
 cask 'bartender'
 cask 'veracrypt'
-cask 'sequel-pro'
+cask 'sequel-ace'
 cask 'nordvpn'
 cask 'runjs'
-cask 'notable'
 cask 'graphiql'
 # cask 'trailer' NOT AS USEFUL FOR NOW
 # cask 'alfred' let's see how we handle spotlight
@@ -140,7 +140,6 @@ cask 'iina'
 cask 'vlc'
 cask 'spotify'
 cask 'yacreader'
-cask 'spotify'
 # cask 'gimp'
 # cask 'inkscape'
 # cask 'libreoffice'
