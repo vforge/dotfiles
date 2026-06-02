@@ -1,5 +1,7 @@
 # 🦄 dotfiles 🦄
 
+> Personal configuration. Use at your own risk — no warranty whatsoever.
+
 Modern zsh setup: **zinit** + **starship** + **zoxide**.
 
 ## Setup (new machine)
