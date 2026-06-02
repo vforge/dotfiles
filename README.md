@@ -59,12 +59,20 @@ zinit auto-installs on first launch if missing.
 
 ## Updating existing machine
 
+From anywhere:
 ```bash
-cd ~/.dotfiles && git pull && bash install.sh  # re-runs current mode
+dotfiles-update          # Pull + re-apply (auto-detects mode)
+dotfiles-update simple   # Force simple mode
+dotfiles-update work     # Force workstation mode
+```
+
+Or manually:
+```bash
+cd ~/.dotfiles && git pull && bash install.sh
 ```
 
 ## Notes
 
 - Node.js/Python shown in prompt **only** inside project directories
 - Git repos show full path (not truncated to repo root)
-- Backups of old configs saved as `.bak` files on first run
+- Old configs backed up as `.backup` on first run
