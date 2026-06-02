@@ -35,20 +35,20 @@ disabled = true
 # Node.js: only in project directories
 [custom.node_project]
 description = "Node.js version in project directories"
-when = """[ -f .nvmrc ] || [ -f .node-version ] || [ -f package-lock.json ] || [ -f yarn.lock ]"""
-shell = ["zsh"]
-command = "printf '📦 '; node --version 2>/dev/null || true"
+when = "test -f .nvmrc || test -f .node-version || test -f package-lock.json || test -f yarn.lock"
+shell = ["sh"]
+command = "node --version 2>/dev/null"
 style = "bold green"
-format = 'via $output '
+format = 'via [📦 $output]($style) '
 
 # Python: only in project directories
 [custom.python_project]
 description = "Python version in project directories"
-when = """[ -f requirements.txt ] || [ -f setup.py ] || [ -f pyproject.toml ] || [ -f Pipfile ] || [ -f .python-version ] || [ -d venv ] || [ -d .venv ]"""
-shell = ["zsh"]
-command = "printf '🐍 '; python3 --version 2>/dev/null | awk '{print $2}' || true"
+when = "test -f requirements.txt || test -f setup.py || test -f pyproject.toml || test -f Pipfile || test -f .python-version || test -d venv || test -d .venv"
+shell = ["sh"]
+command = "python3 --version 2>/dev/null | cut -d\" \" -f2"
 style = "bold yellow"
-format = 'via $output '
+format = 'via [🐍 $output]($style) '
 
 [docker_context]
 format = '[$symbol$context]($style) '
