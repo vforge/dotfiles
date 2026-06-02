@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Update dotfiles from remote and re-apply configs
+# Usage: dotfiles-update [simple|work]
+#        dotfiles-update           # Uses current mode (auto-detect)
+#
+
+set -e
+
+DOTFILES="$HOME/.dotfiles"
+
+if [ ! -d "$DOTFILES/.git" ]; then
+  echo "Error: $DOTFILES is not a git repository"
+  exit 1
+fi
+
+cd "$DOTFILES"
+
+echo "- Fetching updates..."
+git pull || { echo "Nothing to pull or pull failed"; exit 1; }
+
+echo "- Re-applying configs..."
+bash install.sh "$@"
+
+echo "- Done! Run 'exec zsh' to reload your shell."

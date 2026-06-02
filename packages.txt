@@ -1,0 +1,15 @@
+# System packages for simple mode (Linux)
+# apt (Ubuntu/Debian/Pi OS):   sudo apt install -y $(cat packages.txt)
+# pacman (CachyOS):            sudo pacman -S --noconfirm $(cat packages.txt)
+# Note: build-essential → base-devel on Arch
+
+git
+curl
+zsh
+fzf
+jq
+ripgrep
+openssh-client
+python3
+ruby
+build-essential

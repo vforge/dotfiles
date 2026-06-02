@@ -6,28 +6,25 @@ Modern zsh setup: **zinit** + **starship** + **zoxide**.
 
 ## Setup (new machine)
 
-### 1. Clone
+### Simple mode (servers, headless Linux)
+
+Installs core configs + system packages only.
+
 ```bash
 git clone https://github.com/vforge/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+cd ~/.dotfiles && bash install.sh simple
+exec zsh
 ```
 
-### 2. Install dependencies
-```bash
-# macOS
-brew bundle --file=Brewfile
+Supports: Ubuntu, Debian, Raspberry Pi OS, CachyOS.
 
-# Linux (Ubuntu/Debian)
-sudo apt install starship zsh curl git
-```
+### Workstation mode (macOS desktop)
 
-### 3. Create symlinks
-```bash
-bash install/symlinks.sh --force
-```
+Full setup: configs + Homebrew + apps + macOS defaults.
 
-### 4. Restart shell
 ```bash
+git clone https://github.com/vforge/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles && bash install.sh work
 exec zsh
 ```
 
@@ -63,7 +60,7 @@ zinit auto-installs on first launch if missing.
 ## Updating existing machine
 
 ```bash
-cd ~/.dotfiles && git pull && bash install/symlinks.sh --force
+cd ~/.dotfiles && git pull && bash install.sh  # re-runs current mode
 ```
 
 ## Notes
