@@ -119,8 +119,6 @@ cask 'the-unarchiver'
 # cask 'ccleaner'
 cask 'lantern'
 # browsers / IDE
-# cask 'atom-beta'
-# cask 'atom'
 cask 'sublime-text'
 cask 'visual-studio-code'
 # cask 'firefox'

@@ -4,7 +4,6 @@ alias cls='clear' # Good 'ol Clear Screen command
 
 alias g='git'
 
-# alias -g atombeta="ATOM_HOME=~/.atombeta open -a 'Atom Beta'"
 
 alias ka='k -n'
 alias k='k -A'

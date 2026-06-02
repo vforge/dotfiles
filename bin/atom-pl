@@ -1,9 +1,0 @@
-#!/bin/sh
-#
-# Pull Atom config
-#
-
-echo "- Autopulling .atom"
-cd ~/.atom
-git cl
-git pl

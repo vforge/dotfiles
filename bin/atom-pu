@@ -1,8 +1,0 @@
-#!/bin/sh
-#
-# Push Atom config
-#
-
-echo "- Autopushing .atom"
-cd ~/.atom
-git upz
