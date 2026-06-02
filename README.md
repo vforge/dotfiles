@@ -1,12 +1,12 @@
-# 🦄 dotfiles 🦄
+# 🦄 dotfiles 🛠️
 
-> Personal configuration. Use at your own risk — no warranty whatsoever.
+> ⚠️ Personal configuration. Use at your own risk — no warranty whatsoever.
 
-Modern zsh setup: **zinit** + **starship** + **zoxide**.
+🐚 Modern zsh setup: **zinit** + **starship** + **zoxide**
 
-## Setup (new machine)
+## 🚀 Setup (new machine)
 
-### Simple mode (servers, headless Linux)
+### 🐧 Simple mode (servers, headless Linux)
 
 Installs core configs + system packages only.
 
@@ -18,7 +18,7 @@ exec zsh
 
 Supports: Ubuntu, Debian, Raspberry Pi OS, CachyOS.
 
-### Workstation mode (macOS desktop)
+### 💻 Workstation mode (macOS desktop)
 
 Full setup: configs + Homebrew + apps + macOS defaults.
 
@@ -30,7 +30,7 @@ exec zsh
 
 zinit auto-installs on first launch if missing.
 
-## Stack
+## 📦 Stack
 
 | Component | What it does | Docs |
 |-----------|-------------|------|
@@ -43,13 +43,13 @@ zinit auto-installs on first launch if missing.
 | **zsh-history-substring-search** | History search (Up/Down arrows) | [GitHub](https://github.com/zsh-users/zsh-history-substring-search) |
 | **fzf** | Fuzzy finder (Ctrl+T, Ctrl+R) | [GitHub](https://github.com/junegunn/fzf) |
 
-## Git productivity plugins
+## 🔧 Git productivity plugins
 
 - **supercrabtree/k** — Search git log by keyword (`k <keyword>`) — [GitHub](https://github.com/supercrabtree/k)
 - **peterhurford/git-it-on.zsh** — Git helper aliases — [GitHub](https://github.com/peterhurford/git-it-on.zsh)
 - **skx/sysadmin-util** — Sysadmin utility functions — [GitHub](https://github.com/skx/sysadmin-util)
 
-## Tool integrations
+## 🔌 Tool integrations
 
 - **pnpm** — PATH configured via pnpm installer snippet — [pnpm.io](https://pnpm.io/)
 - **Google Cloud SDK** — Auto-loaded if installed — [cloud.google.com/sdk](https://cloud.google.com/sdk)
@@ -57,7 +57,7 @@ zinit auto-installs on first launch if missing.
 - **rbenv** — Ruby version manager (loaded if available) — [rbenv.github.io](https://github.com/rbenv/rbenv)
 - **GRC** — Colorizes unix tools (loaded if available) — [GitHub](https://github.com/garabik/grc)
 
-## Updating existing machine
+## 🔄 Updating existing machine
 
 From anywhere:
 ```bash
@@ -71,7 +71,7 @@ Or manually:
 cd ~/.dotfiles && git pull && bash install.sh
 ```
 
-## Notes
+## 📝 Notes
 
 - Node.js/Python shown in prompt **only** inside project directories
 - Git repos show full path (not truncated to repo root)
