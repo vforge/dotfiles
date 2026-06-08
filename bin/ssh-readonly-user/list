@@ -102,7 +102,8 @@ if [[ "$FORMAT" == "json" ]]; then
       for f in "$home_dir"/.readonly-bin/*; do
         [[ -L "$f" ]] && cmds+=("$(basename "$f")")
       done
-      cmd_json="$(printf '%s\n' "${cmds[@]}" | sort | jq -R . | jq -s . 2>/dev/null || echo "[${cmds[*]}]")"
+      cmd_json="$(printf '%s\n' "${cmds[@]}" | sort | jq -R . | jq -s . 2>/dev/null || \
+        printf '[%s]' "$(printf '"%s"\n' "${cmds[@]}" | sort | tr '\n' ',' | sed 's/,$//')")"
     fi
 
     # SSH keys
@@ -111,11 +112,16 @@ if [[ "$FORMAT" == "json" ]]; then
       key_entries=()
       while IFS= read -r line; do
         [[ -z "$line" || "$line" == \#* ]] && continue
-        # Extract key type and fingerprint-like identifier (first 8 chars of key data)
-        key_type="$(echo "$line" | awk '{print $NF}')"
+        if [[ "$line" =~ ^(ssh-|ecdsa-|sk-) ]]; then
+          key_type="$(echo "$line" | awk '{print $1}')"
+          key_data="$(echo "$line" | awk '{print $2}' | cut -c1-16)"
+          flags="none"
+        else
+          key_type="$(echo "$line" | awk '{print $2}')"
+          key_data="$(echo "$line" | awk '{print $3}' | cut -c1-16)"
+          flags="$(echo "$line" | awk '{print $1}')"
+        fi
         if [[ "$key_type" == ssh-* || "$key_type" == ecdsa-* || "$key_type" == sk-* ]]; then
-          key_data="$(echo "$line" | awk '{print $(NF-1)}' | cut -c1-16)"
-          flags="$(echo "$line" | awk '{print $1}' | sed 's/,.*ssh-.*//; s/,.*ecdsa-.*//; s/,.*sk-.*//')"
           key_entries+=("{\"flags\":\"$flags\",\"key\":\"${key_data}...\"}")
         fi
       done < "$home_dir/.ssh/authorized_keys"
@@ -212,8 +218,13 @@ for user in "${RBASH_USERS[@]}"; do
     # Show key details
     while IFS= read -r line; do
       [[ -z "$line" || "$line" == \#* ]] && continue
-      flags="$(echo "$line" | awk '{print $1}' | sed 's/,.*ssh-.*//; s/,.*ecdsa-.*//; s/,.*sk-.*//')"
-      key_preview="$(echo "$line" | awk '{print $(NF-1)}' | cut -c1-20)"
+      if [[ "$line" =~ ^(ssh-|ecdsa-|sk-) ]]; then
+        flags="none"
+        key_preview="$(echo "$line" | awk '{print $2}' | cut -c1-20)"
+      else
+        flags="$(echo "$line" | awk '{print $1}')"
+        key_preview="$(echo "$line" | awk '{print $3}' | cut -c1-20)"
+      fi
       echo "    → flags=$flags key=${key_preview}..."
     done < "$home_dir/.ssh/authorized_keys"
   else

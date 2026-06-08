@@ -105,8 +105,7 @@ KEY_BASENAME="$(basename "$KEY_FILE" .pub)"
 if [[ -n "${READONLY_USER_OVERRIDE:-}" ]]; then
   READONLY_USER="$READONLY_USER_OVERRIDE"
 elif [[ "$KEY_BASENAME" == id_* ]]; then
-  READONLY_USER="${KEY_BASENAME#id_*}"
-  READONLY_USER="${READONLY_USER#_}"   # strip leading underscore if any
+  READONLY_USER="${KEY_BASENAME##id_*_}"
 else
   READONLY_USER="$KEY_BASENAME"
 fi
@@ -142,7 +141,7 @@ detect_os() {
     echo "debian"
   elif [[ -f /etc/arch-release ]]; then
     echo "arch"
-  elif command -v lsb_release &>/dev/null && lsb_release -si 2>/dev/null | grep -qiE 'arch|catchyos'; then
+  elif command -v lsb_release &>/dev/null && lsb_release -si 2>/dev/null | grep -qiE 'arch|cachyos'; then
     echo "arch"
   else
     echo "unknown"
@@ -195,7 +194,8 @@ for cmd in $CMD_LIST; do
   NEW_COMMANDS_SET="$NEW_COMMANDS_SET $cmd"
 done
 
-echo "[*] Setting up private bin at $PRIVATE_BIN (${#CMD_LIST} commands)"
+cmd_count=$(echo "$CMD_LIST" | wc -w | tr -d ' ')
+echo "[*] Setting up private bin at $PRIVATE_BIN ($cmd_count commands)"
 
 # Clean up stale symlinks (commands removed from whitelist since last run)
 stale=0
@@ -322,12 +322,9 @@ SUDOERS
 
 # Add docker rules if docker is installed
 if command -v docker &>/dev/null; then
-  cat >> "$SUDOERS_FILE" << 'DOCKER'
-    /usr/bin/docker ps, \
-    /usr/bin/docker ps -a, \
-    /usr/bin/docker logs *, \
-    /usr/bin/docker stats --no-stream, \
-    /usr/bin/docker inspect *
+  cat >> "$SUDOERS_FILE" << DOCKER
+
+${READONLY_USER} ALL=(ALL) NOPASSWD: /usr/bin/docker ps, /usr/bin/docker ps -a, /usr/bin/docker logs *, /usr/bin/docker stats --no-stream, /usr/bin/docker inspect *
 DOCKER
   echo "[+] Docker sudo rules added"
 fi
@@ -336,9 +333,8 @@ fi
 if command -v kubectl &>/dev/null; then
   KUBECTL_PATH="$(readlink -f "$(command -v kubectl)")"
   cat >> "$SUDOERS_FILE" << KUBE
-    ${KUBECTL_PATH} get *, \
-    ${KUBECTL_PATH} describe *, \
-    ${KUBECTL_PATH} logs *
+
+${READONLY_USER} ALL=(ALL) NOPASSWD: ${KUBECTL_PATH} get *, ${KUBECTL_PATH} describe *, ${KUBECTL_PATH} logs *
 KUBE
   echo "[+] kubectl sudo rules added"
 fi
