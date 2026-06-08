@@ -1,0 +1,250 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+###############################################################################
+# ssh-readonly-user/list
+#
+# Audits all readonly users on a remote server. Shows:
+#   - Username, shell, home directory
+#   - Available commands in ~/.readonly-bin/
+#   - SSH key fingerprints
+#   - Sudo rules from /etc/sudoers.d/readonly-*
+#
+# Usage:
+#   ssh-readonly-user/list user@host [options]
+###############################################################################
+
+usage() {
+  cat >&2 <<EOF
+Usage: $(basename "$0") user@host [options]
+
+Options:
+  --json         Output in JSON format (for scripting/parsing)
+  --brief        One line per user, no details
+  --help         Show this help
+
+Example:
+  $(basename "$0") root@192.168.1.10
+  $(basename "$0") admin@server --json
+EOF
+  exit 1
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
+fi
+
+REMOTE="$1"
+shift || true
+
+FORMAT="table"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --json)
+      FORMAT="json"
+      shift
+      ;;
+    --brief)
+      FORMAT="brief"
+      shift
+      ;;
+    --help)
+      usage
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage
+      ;;
+  esac
+done
+
+if [[ "$REMOTE" != *@* ]]; then
+  echo "Error: Remote must be in user@host format, got: $REMOTE" >&2
+  exit 1
+fi
+
+# ── SSH and audit ───────────────────────────────────────────────────────────
+ssh -o StrictHostKeyChecking=accept-new "$REMOTE" bash -s "$FORMAT" << 'REMOTE_SCRIPT'
+set -euo pipefail
+
+FORMAT="$1"
+
+# Collect all users with rbash shell
+RBASH_USERS=()
+while IFS=: read -r username _ uid gid _ home shell; do
+  if [[ "$shell" == *"/rbash"* ]]; then
+    RBASH_USERS+=("$username")
+  fi
+done < /etc/passwd
+
+if [[ ${#RBASH_USERS[@]} -eq 0 ]]; then
+  case "$FORMAT" in
+    json)   echo "[]" ;;
+    brief)  echo "No readonly users found." ;;
+    table)  echo "No readonly users found (no users with /bin/rbash shell)." ;;
+  esac
+  exit 0
+fi
+
+# ── JSON output ─────────────────────────────────────────────────────────────
+if [[ "$FORMAT" == "json" ]]; then
+  echo "["
+  first=true
+  for user in "${RBASH_USERS[@]}"; do
+    home_dir="$(eval echo ~$user 2>/dev/null || echo "unknown")"
+    shell="$(getent passwd "$user" | cut -d: -f7)"
+
+    # Commands
+    cmd_json="[]"
+    if [[ -d "$home_dir/.readonly-bin" ]]; then
+      cmds=()
+      for f in "$home_dir"/.readonly-bin/*; do
+        [[ -L "$f" ]] && cmds+=("$(basename "$f")")
+      done
+      cmd_json="$(printf '%s\n' "${cmds[@]}" | sort | jq -R . | jq -s . 2>/dev/null || echo "[${cmds[*]}]")"
+    fi
+
+    # SSH keys
+    keys_json="[]"
+    if [[ -f "$home_dir/.ssh/authorized_keys" ]]; then
+      key_entries=()
+      while IFS= read -r line; do
+        [[ -z "$line" || "$line" == \#* ]] && continue
+        # Extract key type and fingerprint-like identifier (first 8 chars of key data)
+        key_type="$(echo "$line" | awk '{print $NF}')"
+        if [[ "$key_type" == ssh-* || "$key_type" == ecdsa-* || "$key_type" == sk-* ]]; then
+          key_data="$(echo "$line" | awk '{print $(NF-1)}' | cut -c1-16)"
+          flags="$(echo "$line" | awk '{print $1}' | sed 's/,.*ssh-.*//; s/,.*ecdsa-.*//; s/,.*sk-.*//')"
+          key_entries+=("{\"flags\":\"$flags\",\"key\":\"${key_data}...\"}")
+        fi
+      done < "$home_dir/.ssh/authorized_keys"
+      if [[ ${#key_entries[@]} -gt 0 ]]; then
+        keys_json="$(printf '%s\n' "${key_entries[@]}" | jq -s . 2>/dev/null || echo "[${key_entries[*]}]")"
+      fi
+    fi
+
+    # Sudo rules
+    sudo_file="/etc/sudoers.d/readonly-${user}"
+    sudo_rules="[]"
+    if [[ -f "$sudo_file" ]]; then
+      rules=()
+      while IFS= read -r line; do
+        trimmed="$(echo "$line" | sed 's/^ *//; s/ *$//; s/\\$//')"
+        [[ -z "$trimmed" || "$trimmed" == \#* ]] && continue
+        rules+=("$trimmed")
+      done < "$sudo_file"
+      sudo_rules="$(printf '%s\n' "${rules[@]}" | jq -R . | jq -s . 2>/dev/null || echo "[${rules[*]}]")"
+    fi
+
+    # Home lock status
+    home_locked=false
+    if [[ -d "$home_dir" ]]; then
+      perms="$(stat -c '%a' "$home_dir" 2>/dev/null || stat -f '%A' "$home_dir" 2>/dev/null || echo "unknown")"
+      if [[ "$perms" == "555" ]]; then
+        home_locked=true
+      fi
+    fi
+
+    $first || echo ","
+    first=false
+    cat <<ENTRY
+{
+  "user": "$user",
+  "home": "$home_dir",
+  "shell": "$shell",
+  "commands": $cmd_json,
+  "ssh_keys": $keys_json,
+  "sudo_rules": $sudo_rules,
+  "home_locked": $home_locked
+}
+ENTRY
+  done
+  echo "]"
+  exit 0
+fi
+
+# ── Brief output ────────────────────────────────────────────────────────────
+if [[ "$FORMAT" == "brief" ]]; then
+  for user in "${RBASH_USERS[@]}"; do
+    home_dir="$(eval echo ~$user 2>/dev/null || echo "unknown")"
+    cmd_count=0
+    [[ -d "$home_dir/.readonly-bin" ]] && cmd_count="$(ls -1 "$home_dir/.readonly-bin" 2>/dev/null | wc -l | tr -d ' ')"
+    key_count=0
+    [[ -f "$home_dir/.ssh/authorized_keys" ]] && key_count="$(grep -c '^no-' "$home_dir/.ssh/authorized_keys" 2>/dev/null || echo 0)"
+    sudo_file="/etc/sudoers.d/readonly-${user}"
+    has_sudo="no"
+    [[ -f "$sudo_file" ]] && has_sudo="yes"
+    echo "$user  home=$home_dir  cmds=$cmd_count  keys=$key_count  sudo=$has_sudo"
+  done
+  exit 0
+fi
+
+# ── Table output (default) ──────────────────────────────────────────────────
+echo "=== Readonly Users on $(hostname) ==="
+echo ""
+
+for user in "${RBASH_USERS[@]}"; do
+  home_dir="$(eval echo ~$user 2>/dev/null || echo "unknown")"
+  shell="$(getent passwd "$user" | cut -d: -f7)"
+  uid_gid="$(id "$user" 2>/dev/null | sed 's/.*(\(.*\))/\1/' || echo "unknown")"
+
+  echo "── $user ──"
+  echo "  Home:    $home_dir"
+  echo "  Shell:   $shell"
+  echo "  UID/GID: $uid_gid"
+
+  # Commands
+  if [[ -d "$home_dir/.readonly-bin" ]]; then
+    cmds="$(ls -1 "$home_dir/.readonly-bin" 2>/dev/null | sort | tr '\n' ' ')"
+    cmd_count="$(echo "$cmds" | wc -w | tr -d ' ')"
+    echo "  Commands ($cmd_count): $cmds"
+  else
+    echo "  Commands: (none — ~/.readonly-bin missing)"
+  fi
+
+  # SSH keys
+  if [[ -f "$home_dir/.ssh/authorized_keys" ]]; then
+    key_count="$(grep -c '^' "$home_dir/.ssh/authorized_keys" 2>/dev/null || echo 0)"
+    readonly_keys="$(grep -c '^no-' "$home_dir/.ssh/authorized_keys" 2>/dev/null || echo 0)"
+    echo "  SSH keys: $key_count total ($readonly_keys with hardening flags)"
+
+    # Show key details
+    while IFS= read -r line; do
+      [[ -z "$line" || "$line" == \#* ]] && continue
+      flags="$(echo "$line" | awk '{print $1}' | sed 's/,.*ssh-.*//; s/,.*ecdsa-.*//; s/,.*sk-.*//')"
+      key_preview="$(echo "$line" | awk '{print $(NF-1)}' | cut -c1-20)"
+      echo "    → flags=$flags key=${key_preview}..."
+    done < "$home_dir/.ssh/authorized_keys"
+  else
+    echo "  SSH keys: (none)"
+  fi
+
+  # Sudo rules
+  sudo_file="/etc/sudoers.d/readonly-${user}"
+  if [[ -f "$sudo_file" ]]; then
+    echo "  Sudo:    YES ($(wc -l < "$sudo_file") rules in $sudo_file)"
+    while IFS= read -r line; do
+      trimmed="$(echo "$line" | sed 's/^ *//; s/ *$//; s/\\$//')"
+      [[ -z "$trimmed" || "$trimmed" == \#* ]] && continue
+      echo "    $trimmed"
+    done < "$sudo_file"
+  else
+    echo "  Sudo:    NO (no sudoers drop-in file)"
+  fi
+
+  # Home lock status
+  if [[ -d "$home_dir" ]]; then
+    perms="$(stat -c '%a' "$home_dir" 2>/dev/null || stat -f '%A' "$home_dir" 2>/dev/null || echo "unknown")"
+    if [[ "$perms" == "555" ]]; then
+      echo "  Lock:    YES (home is read-only, mode 555)"
+    else
+      echo "  Lock:    NO (home permissions: $perms)"
+    fi
+  fi
+
+  echo ""
+done
+
+echo "=== Total: ${#RBASH_USERS[@]} readonly user(s) ==="
+REMOTE_SCRIPT

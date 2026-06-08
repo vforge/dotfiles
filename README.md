@@ -57,6 +57,11 @@ zinit auto-installs on first launch if missing.
 - **rbenv** — Ruby version manager (loaded if available) — [rbenv.github.io](https://github.com/rbenv/rbenv)
 - **GRC** — Colorizes unix tools (loaded if available) — [GitHub](https://github.com/garabik/grc)
 
+## 🔨 CLI Tools
+
+Custom scripts in `bin/` — git helpers, kubectl wrappers, SSH provisioning, and more.
+→ Full list: [TOOLS.md](TOOLS.md)
+
 ## 🔄 Updating existing machine
 
 From anywhere:
