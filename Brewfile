@@ -64,6 +64,7 @@ brew 'htop'
 brew 'starship'  # cross-shell prompt (replaces pure)
 brew 'gh'        # GitHub CLI
 brew 'rg'        # ripgrep
+cask 'font-jetbrains-mono-nerd-font'  # Nerd Font for tmux/starship icons
 
 # zoxide and fuzzy z finder
 brew 'zoxide'
