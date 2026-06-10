@@ -99,6 +99,11 @@ row "g / G"                     "Top / bottom of scrollback"
 row "Ctrl-u / Ctrl-d"           "Half-page up / down"
 row "q or Esc"                  "Exit copy mode"
 
+header "tmux-fzf"
+prefrow "  F"                    "Fuzzy search sessions / windows / panes"
+row "then: Enter"               "Switch to selection"
+row "then: X"                   "Kill selected item"
+
 header "Plugins (resurrect & continuum)"
 prefrow "  Ctrl+s"               "Save session manually"
 prefrow "  Ctrl+r"               "Restore session manually"

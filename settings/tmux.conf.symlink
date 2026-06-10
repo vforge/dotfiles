@@ -23,6 +23,15 @@ set -g base-index 1
 setw -g pane-base-index 1
 set -g renumber-windows on   # reorder windows after closing one
 
+# ── Pane titles ───────────────────────────────
+set -g pane-border-status top
+set -g pane-border-format " #{pane_current_command} "
+
+# ── Window auto-rename ────────────────────────
+setw -g automatic-rename on
+set -g automatic-rename-format "#{pane_current_command}"
+setw -g allow-rename off          # prevent apps (e.g. claude-code) from overriding window name with version strings
+
 # ── Mouse ─────────────────────────────────────
 set -g mouse on
 bind -T copy-mode-vi WheelUpPane   send -X -N 1 scroll-up
@@ -114,6 +123,9 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'    # save/restore sessions
 set -g @plugin 'tmux-plugins/tmux-continuum'    # auto-save resurrect sessions
 set -g @plugin 'tmux-plugins/tmux-cpu'          # CPU/RAM for status bar
 set -g @plugin 'tmux-plugins/tmux-battery'      # battery for status bar
+set -g @plugin 'sainnhe/tmux-fzf'               # fuzzy finder for sessions/windows/panes
+set -g @plugin 'tmux-plugins/tmux-open'         # open URLs/files from copy mode (o)
+set -g @plugin 'tmux-plugins/tmux-yank'         # clipboard across macOS/Linux/SSH
 
 # Plugin settings
 set -g @cpu_low_icon "🖥"
