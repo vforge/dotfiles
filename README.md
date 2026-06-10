@@ -62,6 +62,11 @@ zinit auto-installs on first launch if missing.
 Custom scripts in `bin/` — git helpers, kubectl wrappers, SSH provisioning, and more.
 → Full list: [TOOLS.md](TOOLS.md)
 
+## 🖥️ tmux
+
+Persistent sessions, Vim-style navigation, Tokyo Night status bar, auto-save/restore.
+→ Setup & keybinds: [TMUX.md](TMUX.md)
+
 ## 🔄 Updating existing machine
 
 From anywhere:

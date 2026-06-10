@@ -1,0 +1,119 @@
+# ─────────────────────────────────────────────
+#  ~/.tmux.conf
+#  Prefix: Ctrl+a  |  Mac/Linux compatible
+# ─────────────────────────────────────────────
+
+# ── Prefix ────────────────────────────────────
+unbind C-b
+set -g prefix C-a
+bind C-a send-prefix        # Ctrl+a twice sends it to the inner shell
+
+# ── General ───────────────────────────────────
+set -g default-terminal "tmux-256color"
+set -ga terminal-overrides ",xterm-256color:Tc"   # true color
+set -g history-limit 50000
+set -g display-time 2000                          # message display ms
+set -g focus-events on
+set -g escape-time 0                              # no Esc delay (important for Vim)
+set -g set-clipboard on
+
+# ── Base index: start windows/panes at 1 ──────
+set -g base-index 1
+setw -g pane-base-index 1
+set -g renumber-windows on   # reorder windows after closing one
+
+# ── Mouse ─────────────────────────────────────
+set -g mouse on
+
+# ── Splits: | and - (intuitive) ───────────────
+unbind '"'
+unbind %
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+bind c new-window -c "#{pane_current_path}"       # new window keeps cwd
+
+# ── Pane navigation: Vim-style ─────────────────
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# ── Pane resizing: Shift + hjkl ───────────────
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# ── Reload config ─────────────────────────────
+bind r source-file ~/.tmux.conf \; display "Config reloaded!"
+
+# ── Help ──────────────────────────────────────
+bind ? display-popup -E -w 80% -h 80% -T "tmux cheatsheet" "~/.dotfiles/bin/tmux-help | less -R"
+
+# ── Copy mode (Vi) ────────────────────────────
+setw -g mode-keys vi
+bind Enter copy-mode
+bind -T copy-mode-vi v send -X begin-selection
+
+# Clipboard: pbcopy on macOS, xclip on Linux
+# Note: xclip may not be installed by default — sudo apt/dnf/pacman install xclip
+if-shell "uname | grep -q Darwin" {
+    bind -T copy-mode-vi y               send -X copy-pipe-and-cancel "pbcopy"
+    bind -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "pbcopy"
+} {
+    bind -T copy-mode-vi y               send -X copy-pipe-and-cancel "xclip -selection clipboard"
+    bind -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "xclip -selection clipboard"
+}
+
+# ═══════════════════════════════════════════════
+#  STATUS BAR
+# ═══════════════════════════════════════════════
+
+set -g status on
+set -g status-position bottom
+set -g status-interval 5          # refresh every 5s (for CPU/RAM)
+
+# Colors (dark theme)
+set -g status-style                 "bg=#1a1b26,fg=#a9b1d6"
+set -g window-status-style          "bg=#1a1b26,fg=#565f89"
+set -g window-status-current-style  "bg=#3d59a1,fg=#c0caf5,bold"
+set -g pane-border-style            "fg=#3b3f51"
+set -g pane-active-border-style     "fg=#3d59a1"
+set -g message-style                "bg=#3d59a1,fg=#c0caf5"
+set -g mode-style                   "bg=#3d59a1,fg=#c0caf5"
+
+# Left: session name
+set -g status-left-length 40
+set -g status-left "#[bg=#3d59a1,fg=#c0caf5,bold]  #{session_name} #[bg=#1a1b26,fg=#3d59a1]"
+
+# Window list (center)
+setw -g window-status-format         " #I:#W "
+setw -g window-status-current-format " #[bold]#I:#W #[fg=#7aa2f7]#F"
+set -g status-justify left
+
+# Right: CPU | RAM | Battery | Clock
+# Requires tmux-cpu plugin (installed via TPM below)
+set -g status-right-length 80
+set -g status-right \
+  "#[bg=#1a1b26,fg=#565f89]#{cpu_icon} #{cpu_percentage} #[fg=#3b3f51]│#[fg=#565f89] #{ram_icon} #{ram_percentage} #[fg=#3b3f51]│#[fg=#565f89]  #{battery_percentage} #[fg=#3b3f51]│#[fg=#565f89]  %H:%M "
+
+# ═══════════════════════════════════════════════
+#  PLUGINS  (TPM — Tmux Plugin Manager)
+# ═══════════════════════════════════════════════
+# Install TPM first (one-time, see INSTALL below):
+#   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'     # sane defaults
+set -g @plugin 'tmux-plugins/tmux-resurrect'    # save/restore sessions
+set -g @plugin 'tmux-plugins/tmux-continuum'    # auto-save resurrect sessions
+set -g @plugin 'tmux-plugins/tmux-cpu'          # CPU/RAM for status bar
+set -g @plugin 'tmux-plugins/tmux-battery'      # battery for status bar
+
+# Plugin settings
+set -g @resurrect-capture-pane-contents 'on'    # also save pane content
+set -g @continuum-restore 'on'                  # auto-restore on tmux start
+set -g @continuum-save-interval '15'            # auto-save every 15 min
+
+# Initialize TPM (keep this line last)
+run '~/.tmux/plugins/tpm/tpm'

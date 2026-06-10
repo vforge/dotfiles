@@ -1,0 +1,10 @@
+# .zprofile — sourced by login shells (Terminal.app, SSH, cron) but NOT by
+# non-login interactive shells. Use this for PATH exports that must be present
+# before .zshrc runs, or in contexts where .zshrc is never sourced at all.
+# On macOS, iTerm2/Terminal open login shells, so this runs on every new tab.
+
+# JetBrains Toolbox
+export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
+# Hermes Agent
+export PATH="$HOME/.local/bin:$PATH"
