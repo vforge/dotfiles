@@ -1,7 +1,13 @@
 # Starship config - ~/.starship.toml
-format = "$directory$git_branch$git_status$custom$line_break$character "
+format = "$directory$git_branch$git_status$custom$cmd_duration$line_break$character "
 
 command_timeout = 1000
+
+[cmd_duration]
+min_time = 500         # only show if command took > 0.5s
+format = "[$duration]($style) "
+style = "bold yellow"
+show_milliseconds = false
 
 [character]
 success_symbol = "[❯](bold green)"
