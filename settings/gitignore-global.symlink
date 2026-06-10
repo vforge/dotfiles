@@ -21,4 +21,7 @@ Thumbs.db
 # cache
 .sass-cache
 
+# AI
+ai/_*
+
 **/.claude/settings.local.json

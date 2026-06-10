@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# t — default tmux entrypoint
+# Usage:
+#   t           # open/attach the default "main" session
+#   t <name>    # open/attach a named session
+
+set -euo pipefail
+
+session="${1:-main}"
+
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "t: tmux is not installed" >&2
+  exit 1
+fi
+
+# Outside tmux: create-or-attach the requested session.
+if [[ -z "${TMUX:-}" ]]; then
+  exec tmux new -As "$session"
+fi
+
+# Inside tmux: switch to the requested session, creating it if needed.
+if tmux has-session -t "$session" 2>/dev/null; then
+  exec tmux switch-client -t "$session"
+fi
+
+tmux new-session -d -s "$session"
+exec tmux switch-client -t "$session"

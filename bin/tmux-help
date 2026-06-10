@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# tmux-help — print a tmux keybind cheatsheet
+# Usage: tmux-help
+# Install: mv tmux-help ~/bin/tmux-help && chmod +x ~/bin/tmux-help
+
+# ── Colors ────────────────────────────────────
+RESET=$'\033[0m'
+BOLD=$'\033[1m'
+DIM=$'\033[2m'
+BLUE=$'\033[38;5;111m'
+PURPLE=$'\033[38;5;141m'
+CYAN=$'\033[38;5;73m'
+GRAY=$'\033[38;5;245m'
+WHITE=$'\033[38;5;253m'
+YELLOW=$'\033[38;5;179m'
+
+# ── Helpers ───────────────────────────────────
+prefix="C-a"
+prefix_display="${BLUE}${BOLD}${prefix}${RESET}"
+
+header() {
+  echo
+  echo -e "  ${PURPLE}${BOLD}$1${RESET}"
+  echo -e "  ${GRAY}$(printf '%.0s─' {1..38})${RESET}"
+}
+
+row() {
+  local keys="$1"
+  local desc="$2"
+  printf "  ${CYAN}%-28s${RESET} ${WHITE}%s${RESET}\n" "$keys" "$desc"
+}
+
+prefrow() {
+  local suffix="$1"
+  local desc="$2"
+  local pad=$((28 - ${#prefix} - ${#suffix}))
+  (( pad < 1 )) && pad=1
+
+  printf "  %b%s%b%b%s%*s%b %b%s%b\n" \
+    "${BLUE}${BOLD}" "$prefix" "$RESET" \
+    "$CYAN" "$suffix" "$pad" "" "$RESET" \
+    "$WHITE" "$desc" "$RESET"
+}
+
+cmd() {
+  local keys="$1"
+  local desc="$2"
+  printf "  ${YELLOW}%-28s${RESET} ${WHITE}%s${RESET}\n" "$keys" "$desc"
+}
+
+# ── Output ────────────────────────────────────
+echo
+echo -e "  ${BOLD}${WHITE}tmux cheatsheet${RESET}  ${GRAY}prefix = ${RESET}${BLUE}${BOLD}Ctrl+a${RESET}"
+
+header "Essentials"
+prefrow "  C-a"                  "Send prefix to nested tmux/app"
+prefrow "  ?"                    "Open this cheatsheet"
+prefrow "  :"                    "Tmux command prompt"
+
+header "Sessions"
+cmd "tmux new -s <name>"        "New named session"
+cmd "tmux new -As <name>"       "Create or attach session"
+cmd "tmux attach -t <name>"     "Attach to session"
+cmd "tmux ls"                   "List sessions"
+cmd "tmux kill-session -t <name>" "Kill session"
+prefrow "  d"                    "Detach (session keeps running)"
+prefrow "  \$"                   "Rename session"
+prefrow "  s"                    "Switch sessions (interactive)"
+
+header "Windows (tabs)"
+prefrow "  c"                    "New window (keeps cwd)"
+prefrow "  1-9"                  "Switch to window #"
+prefrow "  n / p"                "Next / previous window"
+prefrow "  ,"                    "Rename window"
+prefrow "  &"                    "Kill window"
+prefrow "  w"                    "Visual window picker"
+
+header "Panes (splits)"
+prefrow "  |"                    "Split vertically"
+prefrow "  -"                    "Split horizontally"
+prefrow "  h/j/k/l"              "Move between panes (Vim-style)"
+prefrow "  H/J/K/L"              "Resize pane"
+prefrow "  ;"                    "Last active pane"
+prefrow "  o"                    "Next pane"
+prefrow "  Space"                "Cycle pane layouts"
+prefrow "  !"                    "Break pane into new window"
+prefrow "  z"                    "Zoom pane (toggle fullscreen)"
+prefrow "  x"                    "Kill pane"
+prefrow "  q"                    "Show pane numbers"
+prefrow "  { / }"                "Swap pane left / right"
+
+header "Copy mode (Vi)"
+prefrow "  Enter"                "Enter copy mode"
+row "v"                         "Start selection"
+row "y"                         "Copy to clipboard"
+row "/ or ?"                    "Search forward / backward"
+row "n / N"                     "Next / previous search result"
+row "g / G"                     "Top / bottom of scrollback"
+row "Ctrl-u / Ctrl-d"           "Half-page up / down"
+row "q or Esc"                  "Exit copy mode"
+
+header "Plugins (resurrect & continuum)"
+prefrow "  Ctrl+s"               "Save session manually"
+prefrow "  Ctrl+r"               "Restore session manually"
+echo -e "  ${DIM}Auto-saves every 15 min, auto-restores on tmux start${RESET}"
+
+header "Config & plugins"
+prefrow "  r"                    "Reload config"
+prefrow "  I"                    "Install plugins (TPM)"
+prefrow "  U"                    "Update plugins"
+
+header "Quick reminders"
+prefrow "  r"                    "Reload after editing ~/.tmux.conf"
+cmd "t"                         "Default entrypoint (attach main)"
+cmd "t <name>"                  "Open/attach another session"
+
+echo
+echo -e "  ${DIM}Claude Code tip: if splits behave oddly, launch with ${RESET}${YELLOW}TERM_PROGRAM='' claude${RESET}"
+echo
+
