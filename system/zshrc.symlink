@@ -28,6 +28,8 @@ export STARSHIP_CONFIG="$HOME/.starship.toml"
 # end with shell (zinit)
 source $DOTFILES/system/shell.zsh
 
+source $DOTFILES/system/title.zsh
+
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in

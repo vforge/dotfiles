@@ -25,7 +25,7 @@ set -g renumber-windows on   # reorder windows after closing one
 
 # ── Pane titles ───────────────────────────────
 set -g pane-border-status top
-set -g pane-border-format " #{pane_current_command} "
+set -g pane-border-format "#{?pane_active,#[fg=#7d9f9f bg=#212121],#[fg=#c0c0c0 bg=#2a2a2a]} #{pane_title} #[default]"
 
 # ── Window auto-rename ────────────────────────
 setw -g automatic-rename on
