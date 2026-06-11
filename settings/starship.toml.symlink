@@ -25,11 +25,11 @@ symbol = "🌿 "
 format = '([$all_status$ahead_behind]($style) )'
 style = "bold red"
 up_to_date = "[✓](bold green)"
-untracked = "[?\u0024count](bold yellow)"
-stashed = "[\u0024\u0024count](bold cyan)"
-modified = "!\u0024count "
-renamed = "~\u0024count "
-deleted = "✗\u0024count "
+untracked = "[?$count](bold yellow)"
+stashed = "[$count](bold cyan)"
+modified = "!$count "
+renamed = "~$count "
+deleted = "✗$count "
 
 # Hide built-in modules - we use custom project-aware versions below
 [nodejs]

@@ -32,6 +32,12 @@ setw -g automatic-rename on
 set -g automatic-rename-format "#{pane_current_command}"
 setw -g allow-rename off          # prevent apps (e.g. claude-code) from overriding window name with version strings
 
+# ── Bell / attention ──────────────────────────
+set -g bell-action other          # only flag non-current windows
+setw -g monitor-bell on           # watch for bell in background windows
+set -g visual-bell off            # no terminal flash — status bar indicator is enough
+set-hook -g alert-bell "run-shell -b '~/.dotfiles/bin/tmux-bell-forward'"  # forward bell to Ghostty for tab indicator
+
 # ── Mouse ─────────────────────────────────────
 set -g mouse on
 bind -T copy-mode-vi WheelUpPane   send -X -N 1 scroll-up
@@ -91,6 +97,7 @@ set -g window-active-style "bg=#151515"   # active pane: near black
 set -g status-style                 "bg=#212121,fg=#d0d0d0"
 set -g window-status-style          "bg=#212121,fg=#505050"
 set -g window-status-current-style  "bg=#303030,fg=#d0d0d0,bold"
+set -g window-status-bell-style     "bg=#212121,fg=#e5c76b,bold"  # Afterglow yellow on bell
 set -g pane-border-style            "fg=#303030"
 set -g pane-active-border-style     "fg=#6c9899"
 set -g message-style                "bg=#6c9899,fg=#212121"
@@ -101,7 +108,7 @@ set -g status-left-length 40
 set -g status-left "#[bg=#6c9899,fg=#212121,bold] 🖥 #{session_name} #[bg=#212121,fg=#6c9899]"
 
 # Window list (center)
-setw -g window-status-format         " #I:#W "
+setw -g window-status-format         " #I:#W#{?window_bell_flag, 🔔,} "
 setw -g window-status-current-format " #[bold]#I:#W #[fg=#7d9f9f]#F"
 set -g status-justify left
 

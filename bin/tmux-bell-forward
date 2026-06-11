@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Forward tmux bell to the Ghostty tab running this session.
+# Hooks run without a client context so #{client_tty} is empty —
+# list-clients filtered by session gives the correct outer TTY.
+session=$(tmux display-message -p "#{session_id}" 2>/dev/null)
+[[ -z "$session" ]] && exit 0
+tmux list-clients -t "$session" -F "#{client_tty}" 2>/dev/null | while read -r tty; do
+    [[ -n "$tty" && -w "$tty" ]] && printf "\a" > "$tty"
+done
