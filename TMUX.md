@@ -15,25 +15,22 @@ brew install tmux        # macOS
 sudo apt install tmux    # Debian/Ubuntu
 ```
 
-### 2. Install TPM (Tmux Plugin Manager)
-
-```bash
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-### 3. Link config (handled by install.sh)
+### 2. Link config + TPM (handled by install.sh)
 
 ```bash
 bash ~/.dotfiles/install/symlinks.sh
 ```
 
+This links the config and clones TPM (Tmux Plugin Manager) to `~/.tmux/plugins/tpm` if not already present.
+
 Or manually:
 
 ```bash
 ln -sf ~/.dotfiles/settings/tmux.conf.symlink ~/.tmux.conf
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
-### 4. Install plugins
+### 3. Install plugins
 
 Start tmux, then press `C-a I` to fetch all plugins.
 

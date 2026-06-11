@@ -36,6 +36,17 @@ link_file "$DOTFILES_ROOT/settings/starship.toml.symlink" "$HOME/.starship.toml"
 # Tmux config
 link_file "$DOTFILES_ROOT/settings/tmux.conf.symlink" "$HOME/.tmux.conf"
 
+# Tmux plugin manager (TPM) — required for `prefix I` to install plugins
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  if git clone -q https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm" 2>/dev/null; then
+    success "installed TPM (tmux plugin manager)"
+  else
+    info "couldn't clone TPM (no network?) — run later: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
+  fi
+else
+  info "TPM already installed"
+fi
+
 # Shell profile (login shells)
 link_file "$DOTFILES_ROOT/settings/zprofile.symlink" "$HOME/.zprofile"
 
