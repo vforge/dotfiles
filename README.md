@@ -54,6 +54,7 @@ zinit auto-installs on first launch if missing.
 - **pnpm** — PATH configured via pnpm installer snippet — [pnpm.io](https://pnpm.io/)
 - **Google Cloud SDK** — Auto-loaded if installed — [cloud.google.com/sdk](https://cloud.google.com/sdk)
 - **LM Studio CLI** (`lms`) — PATH added for local model inference — [GitHub](https://github.com/lmstudio-ai)
+- **Pi coding agent** — Personal Pi package + `pissh` notes — [PI.md](PI.md)
 - **rbenv** — Ruby version manager (loaded if available) — [rbenv.github.io](https://github.com/rbenv/rbenv)
 - **GRC** — Colorizes unix tools (loaded if available) — [GitHub](https://github.com/garabik/grc)
 
