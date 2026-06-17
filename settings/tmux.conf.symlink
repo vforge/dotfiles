@@ -18,6 +18,13 @@ set -g escape-time 0                              # no Esc delay (important for 
 set -g set-clipboard on
 set -g extended-keys on                           # pass Shift/Ctrl/Alt key combos through (e.g. Shift+Enter in Claude Code)
 
+# pi-emote image rendering through tmux requires DCS passthrough and outer-terminal env detection.
+# See: https://github.com/JarodMica/jarods-pi-extensions/tree/master/extensions/pi-emote#multiplexers
+set -g allow-passthrough on
+set -ga update-environment TERM
+set -ga update-environment TERM_PROGRAM
+set -sg escape-time 0                             # reduce animation flicker
+
 # ── Base index: start windows/panes at 1 ──────
 set -g base-index 1
 setw -g pane-base-index 1
