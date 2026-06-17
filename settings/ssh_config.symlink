@@ -1,2 +1,5 @@
 Host *
-  SetEnv TERM=xterm-256color
+  # Do not try to override TERM here. For interactive sessions, SSH sends the
+  # local TERM as the pty terminal type, which overrides SetEnv TERM. The zsh
+  # ssh wrapper in system/aliases.zsh uses TERM=xterm-256color for compatibility
+  # with remote machines that lack Ghostty's xterm-ghostty terminfo.
