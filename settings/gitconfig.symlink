@@ -34,7 +34,7 @@
 
   cc = commit -m
   c = commit -S -m
-	today = !git add -A && git commit -m \"chore: $(date +%Y%m%d%H%M%S)\" && git push
+	today = !git add -A && git commit -m \"chore: $(date +%Y%m%d%H%M%S)\" && (git remote get-url origin >/dev/null 2>&1 && git push || echo 'no origin, skipping push')
   l = log --stat -C
   m = merge --no-ff
   pl = pull --rebase
