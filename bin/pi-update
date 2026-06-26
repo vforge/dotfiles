@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Update Pi CLI and installed extensions
+#
+
+set -e
+
+PI_PKG="@earendil-works/pi-coding-agent"
+
+echo "- Updating Pi CLI..."
+npm install -g --ignore-scripts "$PI_PKG"
+
+echo "- Updating Pi extensions..."
+pi update --extensions
+
+echo "- Done"

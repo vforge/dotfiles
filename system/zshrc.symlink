@@ -28,6 +28,15 @@ export STARSHIP_CONFIG="$HOME/.starship.toml"
 # end with shell (zinit)
 source $DOTFILES/system/shell.zsh
 
+# Auto-reset terminal if a program left it in raw mode
+_zsh_reset_tty() {
+  local lflags
+  lflags=$(stty -a 2>/dev/null | grep -o '[- ]icanon')
+  [[ "$lflags" != " icanon" ]] && stty sane >/dev/null 2>&1
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _zsh_reset_tty
+
 source $DOTFILES/system/title.zsh
 
 # pnpm

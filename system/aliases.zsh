@@ -1,3 +1,5 @@
+alias tty-reset='$DOTFILES/system/tty-reset.zsh'
+
 alias reload!='. ~/.zshrc'
 
 alias cls='clear' # Good 'ol Clear Screen command
