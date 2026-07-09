@@ -6,5 +6,5 @@
 # JetBrains Toolbox
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
-# Hermes Agent
+# Local user binaries
 export PATH="$HOME/.local/bin:$PATH"

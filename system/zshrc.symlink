@@ -47,6 +47,12 @@ case ":$PATH:" in
 esac
 # pnpm end
 
+# Local user binaries
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+
 source $DOTFILES/system/nvm-use.zsh
 
 # Google Cloud SDK
@@ -59,8 +65,6 @@ if [ -f "$HOME/Developer/=libs=/google-cloud-sdk/completion.zsh.inc" ]; then . "
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-export PATH="$HOME/.local/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"
