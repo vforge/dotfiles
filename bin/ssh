@@ -1,0 +1,5 @@
+#!/bin/sh
+# Keep SSH usable when the remote host does not provide Ghostty's terminfo.
+# A PATH-level wrapper also covers scripts and tools that do not load zsh
+# functions. Set SSH_TERM=xterm-ghostty for hosts with the entry installed.
+exec env TERM="${SSH_TERM:-xterm-256color}" /usr/bin/ssh "$@"

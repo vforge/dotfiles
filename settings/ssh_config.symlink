@@ -1,5 +1,5 @@
 Host *
-  # Do not try to override TERM here. For interactive sessions, SSH sends the
-  # local TERM as the pty terminal type, which overrides SetEnv TERM. The zsh
-  # ssh wrapper in system/aliases.zsh uses TERM=xterm-256color for compatibility
-  # with remote machines that lack Ghostty's xterm-ghostty terminfo.
+  # Use a portable terminal for SSH clients that bypass the interactive zsh
+  # wrapper (scripts, rsync, scp, and similar tools). OpenSSH 8.7+ supports
+  # SetEnv; the remote zshrc also guards against a forwarded xterm-ghostty.
+  SetEnv TERM=xterm-256color

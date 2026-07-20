@@ -1,3 +1,11 @@
+# SSH forwards the local terminal name with every allocated PTY. Fall back on
+# remote hosts that have not installed Ghostty's terminfo entry yet. This runs
+# before plugins or prompts can try to use the unsupported terminal.
+if [[ -n "${SSH_CONNECTION:-}" && "${TERM:-}" == "xterm-ghostty" ]] &&
+   ! infocmp xterm-ghostty >/dev/null 2>&1; then
+  export TERM=xterm-256color
+fi
+
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES=$HOME/.dotfiles
 
