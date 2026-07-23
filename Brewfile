@@ -3,6 +3,7 @@ cask_args appdir: '/Applications'
 tap 'homebrew/cask'
 tap 'homebrew/cask-versions'
 tap 'homebrew/bundle'
+tap 'drolosoft/tap'  # cmux-resurrect
 # tap 'homebrew/games'
 # tap 'neovim/neovim'
 #
@@ -69,6 +70,7 @@ cask 'font-jetbrains-mono-nerd-font'  # Nerd Font for tmux/starship icons
 # zoxide and fuzzy z finder
 brew 'zoxide'
 brew 'fzf'
+brew 'cmux-resurrect'  # save/restore cmux and Ghostty workspaces
 
 # developing
 # brew 'php71'
@@ -110,6 +112,7 @@ cask 'launchrocket'
 # cask 'cakebrew' # NOT USED
 # cask 'todoist'
 cask 'iterm2'
+cask 'cmux'
 # cask 'keepingyouawake'
 cask 'appcleaner'
 cask 'dropbox'
