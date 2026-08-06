@@ -30,7 +30,7 @@
   pu = push
   puf = push -f
   new = checkout -b
-  sync = submodule foreach git pull origin master
+  submodules-sync = submodule foreach git pull origin master
 
   cc = commit -m
   c = commit -S -m
