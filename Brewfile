@@ -61,6 +61,11 @@ brew 'midnight-commander'
 # brew 'neovim'
 brew 'htop'
 
+# terminal tools
+brew 'yazi'
+brew 'lazygit'
+brew 'btop'
+
 # shell & prompt
 brew 'starship'  # cross-shell prompt (replaces pure)
 brew 'gh'        # GitHub CLI
