@@ -23,5 +23,7 @@ Thumbs.db
 
 # AI
 ai/_*
+.atlas
+.specstory
 
 **/.claude/settings.local.json
