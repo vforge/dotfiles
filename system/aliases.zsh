@@ -2,6 +2,12 @@ alias tty-reset='$DOTFILES/system/tty-reset.zsh'
 
 alias reload!='. ~/.zshrc'
 
+# Midnight Commander hangs when its default subshell is zsh on macOS.
+# Keep the normal `mc` command, but run its internal shell under bash.
+mc() {
+  "$DOTFILES/bin/mc" "$@"
+}
+
 alias cls='clear' # Good 'ol Clear Screen command
 
 alias g='git'

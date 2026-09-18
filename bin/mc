@@ -1,0 +1,26 @@
+#!/bin/sh
+# Run Midnight Commander with a working shell environment.
+# MC's zsh subshell can hang before rendering the interface on macOS.
+
+BREW=$(command -v brew 2>/dev/null || true)
+if [ -z "$BREW" ]; then
+    printf '%s\n' 'mc wrapper: Homebrew was not found.' >&2
+    exit 127
+fi
+
+MC_BIN=$($BREW --prefix midnight-commander 2>/dev/null)/bin/mc
+if [ ! -x "$MC_BIN" ]; then
+    printf 'mc wrapper: Midnight Commander not found at %s\n' "$MC_BIN" >&2
+    exit 127
+fi
+
+# Preserve bash when it is already the active shell; otherwise make MC
+# create its internal subshell with bash instead of the current shell.
+case "${SHELL##*/}" in
+    bash|bash-* )
+        exec "$MC_BIN" "$@"
+        ;;
+    *)
+        exec env SHELL=/bin/bash "$MC_BIN" "$@"
+        ;;
+esac
