@@ -110,6 +110,7 @@ herdr saves the layout (workspaces, tabs, panes, folders) on its own and resumes
 
 - Plugins installed while the server is running don't start their background daemons until the next herdr start. Radar needs `herdr plugin action invoke hhdebb.herdr-radar.state-start` after a fresh install, or the sidebar rows render empty.
 - Radar writes managed blocks into `config.toml` and puts your absolute home path in the tab-bar command; the `homepath` git filter (`.gitattributes`) commits it as `$HOME`.
+- The `[ui.sidebar.*]` tables are ours, not radar's, so Spaces can show branch + git status instead of radar's agent logos. Radar sees them as foreign and skips its sidebar block (its settings popup reads `agents_panel = herdr`; leave it). Its `$tokens` still flow, but sidebar colours no longer switch with light/dark, and new radar row layouts must be copied in by hand.
 - Radar's agent logos need its icon font; restart Ghostty after installing it.
 - Ghostty doesn't send Option as Alt, so `alt+` bindings don't fire; custom keys use `ctrl+` after the prefix instead.
 - `herdr config check` validates the config before you reload it.
