@@ -28,6 +28,32 @@ swap_pane_down = []
 swap_pane_up = []
 swap_pane_right = []
 switch_workspace = "prefix+shift+1..9"
+next_agent = "prefix+ctrl+n"
+previous_agent = "prefix+ctrl+p"
+last_pane = "prefix+;"
+clear_pane = "prefix+ctrl+k"
+
+# Ghostty doesn't send Option as Alt, so popups avoid alt+ bindings
+[[keys.command]]
+key = "prefix+ctrl+g"
+type = "popup"
+command = "lazygit"
+width = "90%"
+height = "90%"
+
+[[keys.command]]
+key = "prefix+y"
+type = "popup"
+command = "yazi"
+width = "90%"
+height = "90%"
+
+[[keys.command]]
+key = "prefix+t"
+type = "popup"
+command = "btop"
+width = "90%"
+height = "90%"
 
 # Plugin keys avoid herdr defaults (prefix+k/p/shift+d are taken)
 [[keys.command]]

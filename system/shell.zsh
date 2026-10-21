@@ -12,6 +12,7 @@ source "$ZINIT_HOME/zinit.git/zinit.zsh"
 zinit light "zsh-users/zsh-completions"
 autoload -Uz compinit
 compinit
+command -v herdr >/dev/null && eval "$(herdr completion zsh)"
 zmodload zsh/complist
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'

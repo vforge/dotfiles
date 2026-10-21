@@ -53,6 +53,9 @@ if command -v herdr >/dev/null 2>&1; then
       info "couldn't install herdr plugin $repo — run: herdr plugin install $repo"
     fi
   done
+  # Claude skill for driving herdr panes/agents; regenerated so it matches the installed version
+  mkdir -p "$HOME/.claude/skills/herdr"
+  herdr --skill > "$HOME/.claude/skills/herdr/SKILL.md" && success "wrote herdr Claude skill"
 fi
 
 # herdr plugin settings — "<plugin id>:<file in settings/>"
