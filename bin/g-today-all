@@ -1,0 +1,8 @@
+#!/bin/zsh
+# Runs `git today` in every repo listed in ~/.config/g-today/repos.
+while IFS= read -r repo; do
+  [[ -z "$repo" || "$repo" == \#* ]] && continue
+  repo="${repo/#\~/$HOME}"
+  echo "== $(date '+%F %T') $repo"
+  git -C "$repo" today || echo "!! failed (or nothing to commit): $repo"
+done < "$HOME/.config/g-today/repos"

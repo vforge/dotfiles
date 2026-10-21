@@ -13,6 +13,7 @@ Custom CLI scripts in `bin/`. All available on PATH when dotfiles are installed.
 
 | Tool | Description |
 |------|-------------|
+| **g-today-all** | Run `git today` in every repo from `~/.config/g-today/repos` (hourly via launchd) |
 | **git-amend** / **git-amend2** | Amend last commit with/without reword |
 | **git-big-object-report** | Find the largest objects in repo history |
 | **git-conflicts** | Show files with merge conflicts |

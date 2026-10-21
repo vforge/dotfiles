@@ -67,6 +67,15 @@ mkdir -p "$HOME/.memex"
 link_file "$DOTFILES_ROOT/settings/memex.toml.symlink" "$HOME/.memex/config.toml"
 command -v memex >/dev/null 2>&1 && brew services start memex >/dev/null 2>&1 || true
 
+# g-today — hourly `git today` in repos listed in ~/.config/g-today/repos
+# Copied, not linked: launchd skips symlinked plists at login
+mkdir -p "$HOME/.config/g-today" "$HOME/Library/Logs"
+[ -f "$HOME/.config/g-today/repos" ] || echo '# One repo path per line. Blank lines and # comments are ignored. ~ is expanded.' > "$HOME/.config/g-today/repos"
+plist="$HOME/Library/LaunchAgents/com.dotfiles.g-today.plist"
+cp "$DOTFILES_ROOT/settings/g-today.plist" "$plist"
+launchctl bootout "gui/$(id -u)/com.dotfiles.g-today" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$plist" && success "loaded g-today agent"
+
 # Gem config (Ruby)
 link_file "$DOTFILES_ROOT/settings/gemrc.symlink" "$HOME/.gemrc"
 

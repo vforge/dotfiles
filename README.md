@@ -73,6 +73,20 @@ Persistent sessions, Vim-style navigation, Tokyo Night status bar, auto-save/res
 Workspace manager for AI coding agents, with tmux-style keys and plugins.
 → Keys: [HERDR.md](HERDR.md)
 
+## 📸 g today
+
+`git today` (alias in `gitconfig`) stages everything, commits as `chore: <timestamp>`, and pushes if the repo has an `origin`.
+
+On macOS, a launchd agent runs it hourly in every repo listed in `~/.config/g-today/repos` (one path per line, `~` allowed, `#` comments). The list is local and untracked; edits apply on the next run.
+
+```bash
+echo "~/some/repo" >> ~/.config/g-today/repos          # add a repo
+launchctl kickstart "gui/$(id -u)/com.dotfiles.g-today"  # run now
+tail ~/Library/Logs/g-today.log                         # check output
+```
+
+Script: `bin/g-today-all`. Agent: `settings/g-today.plist`, installed by `install/symlinks-work.sh`.
+
 ## 🔄 Updating existing machine
 
 From anywhere:
