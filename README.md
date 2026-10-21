@@ -68,6 +68,11 @@ Custom scripts in `bin/` — git helpers, kubectl wrappers, SSH provisioning, an
 Persistent sessions, Vim-style navigation, Tokyo Night status bar, auto-save/restore.
 → Setup & keybinds: [TMUX.md](TMUX.md)
 
+## 🐑 herdr
+
+Workspace manager for AI coding agents, with tmux-style keys and plugins.
+→ Keys: [HERDR.md](HERDR.md)
+
 ## 🔄 Updating existing machine
 
 From anywhere:

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# herdr-save — keep a named copy of the current herdr session layout
+# Usage:
+#   herdr-save          # save as a timestamped copy
+#   herdr-save <name>   # save as <name> (overwrites)
+# Restore with: herdr-restore [<name>]
+
+set -euo pipefail
+
+dir="$HOME/.config/herdr"
+saved="$dir/saved"
+name="${1:-$(date +%Y-%m-%d_%H%M)}"
+
+if [[ ! -f "$dir/session.json" ]]; then
+  echo "herdr-save: no session at $dir/session.json" >&2
+  exit 1
+fi
+
+mkdir -p "$saved"
+cp "$dir/session.json" "$saved/$name.json"
+echo "saved $name ($(jq '[.workspaces[].tabs[]] | length' "$saved/$name.json") tabs)"

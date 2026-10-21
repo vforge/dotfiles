@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# herdr-restore — replace the herdr session with a saved copy or auto snapshot
+# Usage:
+#   herdr-restore          # pick from herdr-save copies + herdr's auto snapshots (fzf)
+#   herdr-restore <name>   # restore the herdr-save copy called <name>
+#   herdr-restore <file>   # restore any session JSON file
+#
+# Stopping the server ends every process in every pane, so run this outside herdr.
+# Plain crash/restart needs none of this: `herdr` restores the last session itself.
+
+set -euo pipefail
+
+dir="$HOME/.config/herdr"
+saved="$dir/saved"
+
+if [[ -n "${HERDR_PANE_ID:-}" ]]; then
+  echo "herdr-restore: run this outside herdr (it stops the server, and this pane with it)" >&2
+  exit 1
+fi
+
+# One line per candidate: "<date>  <tabs> tabs  <label>\t<path>", newest first
+list() {
+  for f in "$saved"/*.json "$dir"/session-snapshots/*.json; do
+    [[ -f "$f" ]] || continue
+    local label
+    if [[ "$f" == "$saved"/* ]]; then label="saved: $(basename "$f" .json)"; else label="auto"; fi
+    printf '%s  %3s tabs  %s\t%s\n' \
+      "$(stat -f '%Sm' -t '%Y-%m-%d %H:%M' "$f")" \
+      "$(jq '[.workspaces[].tabs[]] | length' "$f" 2>/dev/null || echo '?')" \
+      "$label" "$f"
+  done | sort -r
+}
+
+if [[ $# -eq 0 ]]; then
+  pick=$(list | fzf --delimiter='\t' --with-nth=1 --prompt='restore> ' \
+    --preview 'jq -r ".workspaces[] | \"\(.identity_cwd)\", (.tabs[] | \"   \(.custom_name // \"tab\")\")" {2}') || exit 0
+  file="${pick#*$'\t'}"
+elif [[ -f "$1" ]]; then
+  file="$1"
+else
+  file="$saved/$1.json"
+fi
+
+if [[ ! -f "$file" ]]; then
+  echo "herdr-restore: not found: $file" >&2
+  exit 1
+fi
+
+read -r -p "Stop herdr (ends every pane's processes) and restore $(basename "$file")? [y/N] " ok
+[[ "$ok" == [yY] ]] || exit 0
+
+running() { herdr status server 2>/dev/null | grep -q '^status: running'; }
+if running; then
+  herdr server stop >/dev/null
+  while running; do sleep 0.2; done
+fi
+
+# Keep what we are replacing, so a wrong pick is undoable with herdr-restore
+mkdir -p "$saved"
+[[ -f "$dir/session.json" ]] && cp "$dir/session.json" "$saved/before-restore_$(date +%Y-%m-%d_%H%M%S).json"
+cp "$file" "$dir/session.json"
+
+exec herdr

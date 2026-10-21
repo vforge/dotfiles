@@ -1,0 +1,2 @@
+# Swap the absolute home path herdr-radar writes for $HOME on commit (filter set up by install/symlinks-work.sh)
+settings/herdr.toml.symlink filter=homepath

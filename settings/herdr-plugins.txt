@@ -1,0 +1,8 @@
+# herdr plugins — one owner/repo[/subdir] per line, installed by install/symlinks-work.sh
+hhdebb/herdr-radar
+persiyanov/herdr-reviewr
+speardragon/herdr-plugin-manager
+jeffarese/herdr-bar
+smarzban/herdr-file-viewer
+devashish2203/herdr-worktrunk
+nicosuave/memex

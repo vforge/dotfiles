@@ -65,6 +65,8 @@ brew 'htop'
 brew 'yazi'
 brew 'lazygit'
 brew 'btop'
+brew 'worktrunk'  # `wt` git worktree CLI (herdr-worktrunk plugin)
+brew 'memex'      # agent transcript search (memex herdr plugin)
 
 # shell & prompt
 brew 'starship'  # cross-shell prompt (replaces pure)
