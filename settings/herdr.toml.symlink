@@ -147,3 +147,9 @@ rows = [
   ]
 ]
 # <<< herdr-radar sidebar block
+
+[ui.toast]
+delivery = "system"
+
+[ui.sound]
+enabled = true
