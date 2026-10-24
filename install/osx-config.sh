@@ -41,7 +41,9 @@ defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.Web
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
 # font smoothing for all LCD
-defaults write AppleFontSmoothing -int 2
+defaults write -g AppleFontSmoothing -int 2
 
-# add recet items to the dock
-defaults write com.apple.dock persistent-others -array-add ‘{ “tile-data” = {”list-type” = 1; }; “tile-type” = “recents-tile”;}’ && killall Dock
+# add recent items to the dock (once — -array-add appends a new tile every run)
+if ! defaults read com.apple.dock persistent-others 2>/dev/null | grep -q recents-tile; then
+  defaults write com.apple.dock persistent-others -array-add '{ "tile-data" = { "list-type" = 1; }; "tile-type" = "recents-tile"; }' && killall Dock
+fi

@@ -36,7 +36,7 @@ info "Mode: ${MODE}"
 # ── Core symlinks (both modes) ───────────────────────────────────────────────
 
 info "Installing core config symlinks..."
-bash "$SCRIPT_DIR/install/symlinks.sh" --force
+bash "$SCRIPT_DIR/install/symlinks.sh"
 ok "Core configs linked"
 
 # ── Simple mode (Linux) ─────────────────────────────────────────────────────
@@ -73,30 +73,46 @@ fi
 
 # Workstation extras symlinks
 info "Installing workstation config symlinks..."
-bash "$SCRIPT_DIR/install/symlinks-work.sh" --force
+bash "$SCRIPT_DIR/install/symlinks-work.sh"
 ok "Workstation configs linked"
 
 # Homebrew
 if ! command -v brew >/dev/null 2>&1; then
   info "Installing Homebrew..."
   bash "$SCRIPT_DIR/install/homebrew.sh"
+  # Fresh Apple Silicon installs aren't on PATH until a new shell
+  if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
   ok "Homebrew installed"
 else
   ok "Homebrew already installed"
 fi
 
 # Brewfile (CLI tools + casks)
-info "Installing packages via brew bundle..."
-brew bundle --file="$SCRIPT_DIR/Brewfile" || ok "Brew bundle complete"
-ok "Packages installed"
+if brew bundle check --file="$SCRIPT_DIR/Brewfile" >/dev/null 2>&1; then
+  ok "Brewfile already satisfied"
+else
+  info "Installing packages via brew bundle..."
+  if brew bundle --file="$SCRIPT_DIR/Brewfile"; then
+    ok "Packages installed"
+  else
+    info "brew bundle had failures (see above) — re-run: brew bundle --file=$SCRIPT_DIR/Brewfile"
+  fi
+fi
 
 # Mac App Store apps
 if [ -f "$SCRIPT_DIR/mac-apps.txt" ] && command -v mas >/dev/null 2>&1; then
   info "Installing Mac App Store apps..."
+  INSTALLED_MAS=$(mas list 2>/dev/null | awk '{print $1}')
   while IFS= read -r line || [ -n "$line" ]; do
     ID=$(echo "$line" | awk '{print $1}')
     NAME=$(echo "$line" | cut -d' ' -f2-)
-    mas install "$ID" >/dev/null 2>&1 && ok "Installed: $NAME" || info "Already installed/skipped: $NAME"
+    if echo "$INSTALLED_MAS" | grep -qx "$ID"; then
+      info "Already installed: $NAME"
+    elif mas install "$ID" >/dev/null 2>&1; then
+      ok "Installed: $NAME"
+    else
+      info "Couldn't install: $NAME — run: mas install $ID"
+    fi
   done < "$SCRIPT_DIR/mac-apps.txt"
 fi
 

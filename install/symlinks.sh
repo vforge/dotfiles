@@ -13,12 +13,19 @@ success () { printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"; }
 
 link_file () {
   local src=$1 dst=$2
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]; then
-    mv "$dst" "${dst}.backup" 2>/dev/null || true
-    success "backed up $dst"
+  if [ "$(readlink "$dst")" = "$src" ]; then
+    info "already linked $dst"
+    return
   fi
-  ln -sf "$1" "$2"
-  success "linked $1 to $2"
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    # Never overwrite an earlier backup — that's the only copy of the original
+    local bak="${dst}.backup"
+    if [ -e "$bak" ] || [ -L "$bak" ]; then bak="${dst}.backup.$(date +%Y%m%d%H%M%S)"; fi
+    mv "$dst" "$bak"
+    success "backed up $dst to $bak"
+  fi
+  ln -s "$src" "$dst"
+  success "linked $src to $dst"
 }
 
 info 'Installing core symlinks'

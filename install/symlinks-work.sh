@@ -14,17 +14,25 @@ success () { printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"; }
 
 link_file () {
   local src=$1 dst=$2
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]; then
-    mv "$dst" "${dst}.backup" 2>/dev/null || true
-    success "backed up $dst"
+  if [ "$(readlink "$dst")" = "$src" ]; then
+    info "already linked $dst"
+    return
   fi
-  ln -sf "$1" "$2"
-  success "linked $1 to $2"
+  if [ -e "$dst" ] || [ -L "$dst" ]; then
+    # Never overwrite an earlier backup — that's the only copy of the original
+    local bak="${dst}.backup"
+    if [ -e "$bak" ] || [ -L "$bak" ]; then bak="${dst}.backup.$(date +%Y%m%d%H%M%S)"; fi
+    mv "$dst" "$bak"
+    success "backed up $dst to $bak"
+  fi
+  ln -s "$src" "$dst"
+  success "linked $src to $dst"
 }
 
 info 'Installing workstation symlinks'
 
 # Hyper terminal config
+mkdir -p "$HOME/.config/hyper"
 link_file "$DOTFILES_ROOT/settings/hyper.js.symlink" "$HOME/.config/hyper/hyper.js"
 
 # Vim config
@@ -77,7 +85,11 @@ mkdir -p "$HOME/.config/g-today" "$HOME/Library/Logs"
 plist="$HOME/Library/LaunchAgents/com.dotfiles.g-today.plist"
 cp "$DOTFILES_ROOT/settings/g-today.plist" "$plist"
 launchctl bootout "gui/$(id -u)/com.dotfiles.g-today" 2>/dev/null || true
-launchctl bootstrap "gui/$(id -u)" "$plist" && success "loaded g-today agent"
+if launchctl bootstrap "gui/$(id -u)" "$plist" 2>/dev/null; then
+  success "loaded g-today agent"
+else
+  info "couldn't load g-today agent — run: launchctl bootstrap gui/\$(id -u) $plist"
+fi
 
 # Gem config (Ruby)
 link_file "$DOTFILES_ROOT/settings/gemrc.symlink" "$HOME/.gemrc"
