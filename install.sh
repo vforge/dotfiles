@@ -88,6 +88,7 @@ step_mas() {
   command -v mas >/dev/null 2>&1 || { info "skipping mas (not installed — run the brew step first)"; return 0; }
   INSTALLED_MAS=$(mas list 2>/dev/null | awk '{print $1}')
   while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in '#'*|'') continue ;; esac
     ID=$(echo "$line" | awk '{print $1}')
     NAME=$(echo "$line" | cut -d' ' -f2-)
     if echo "$INSTALLED_MAS" | grep -qx "$ID"; then
