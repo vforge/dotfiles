@@ -19,6 +19,10 @@ link_file () {
     return
   fi
   if [ -e "$dst" ] || [ -L "$dst" ]; then
+    if [ -z "$FORCE" ]; then
+      info "kept existing $dst (install.sh --force to replace it)"
+      return
+    fi
     # Never overwrite an earlier backup — that's the only copy of the original
     local bak="${dst}.backup"
     if [ -e "$bak" ] || [ -L "$bak" ]; then bak="${dst}.backup.$(date +%Y%m%d%H%M%S)"; fi

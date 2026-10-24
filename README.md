@@ -30,6 +30,20 @@ exec zsh
 
 zinit auto-installs on first launch if missing.
 
+### Running individual steps
+
+`simple`/`work` are shortcuts. Run any step on its own, or `bash install.sh` with no arguments to be asked y/N per step:
+
+```bash
+bash install.sh links        # core symlinks
+bash install.sh work-links   # workstation symlinks, herdr plugins, g-today agent
+bash install.sh brew mas     # Homebrew + Brewfile (no upgrades), App Store apps
+bash install.sh macos        # macOS defaults
+bash install.sh packages     # apt/pacman packages (Linux)
+```
+
+Existing files and macOS settings you've already set are kept and reported. Add `--force` to replace them (files are backed up first).
+
 ## 📦 Stack
 
 | Component | What it does | Docs |
@@ -91,7 +105,7 @@ Script: `bin/g-today-all`. Agent: `settings/g-today.plist`, installed by `instal
 
 From anywhere:
 ```bash
-dotfiles-update          # Pull + re-apply (auto-detects mode)
+dotfiles-update          # Pull + ask y/N per step
 dotfiles-update simple   # Force simple mode
 dotfiles-update work     # Force workstation mode
 ```
@@ -105,4 +119,4 @@ cd ~/.dotfiles && git pull && bash install.sh
 
 - Node.js/Python shown in prompt **only** inside project directories
 - Git repos show full path (not truncated to repo root)
-- Old configs backed up as `.backup` on first run
+- Existing configs are never replaced without `--force`; with it they're backed up as `.backup` (timestamped if one already exists)
