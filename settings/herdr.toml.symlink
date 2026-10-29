@@ -38,6 +38,7 @@ clear_pane = "prefix+ctrl+k"
 key = "prefix+ctrl+g"
 type = "popup"
 command = "lazygit"
+description = "lazygit"
 width = "90%"
 height = "90%"
 
@@ -45,6 +46,7 @@ height = "90%"
 key = "prefix+y"
 type = "popup"
 command = "yazi"
+description = "yazi file manager"
 width = "90%"
 height = "90%"
 
@@ -52,6 +54,7 @@ height = "90%"
 key = "prefix+t"
 type = "popup"
 command = "btop"
+description = "btop system monitor"
 width = "90%"
 height = "90%"
 
@@ -110,11 +113,13 @@ description = "worktree: switch / create"
 key = "prefix+comma"
 type = "plugin_action"
 command = "hhdebb.herdr-radar.settings"
+description = "radar settings"
 
 [[keys.command]]
 key = "prefix+a"
 type = "plugin_action"
 command = "hhdebb.herdr-radar.view-flip"
+description = "radar: flip active/recent"
 
 # >>> herdr-radar theme block
 [theme.custom]
