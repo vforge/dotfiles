@@ -1,0 +1,52 @@
+#!/bin/sh
+# Force-quit a macOS app by process name, then launch it again.
+
+usage() {
+  echo "Usage: mac-restart <app-name>" >&2
+  echo "Example: mac-restart Handy" >&2
+  exit 2
+}
+
+[ "$#" -eq 1 ] || usage
+app=$1
+
+if [ "$(uname -s)" != Darwin ]; then
+  echo "mac-restart: this command only works on macOS" >&2
+  exit 1
+fi
+
+if ! open -Ra "$app" >/dev/null 2>&1; then
+  echo "mac-restart: application not found: $app" >&2
+  exit 1
+fi
+
+# Process names can differ in capitalization from the app's display name.
+pids=$(pgrep -ix "$app" 2>/dev/null || true)
+if [ -n "$pids" ]; then
+  echo "Force-stopping $app..."
+  pkill -TERM -ix "$app" 2>/dev/null || true
+
+  # Give the app a moment to exit before resorting to SIGKILL.
+  count=0
+  while [ "$count" -lt 3 ] && pgrep -ix "$app" >/dev/null 2>&1; do
+    sleep 1
+    count=$((count + 1))
+  done
+  if pgrep -ix "$app" >/dev/null 2>&1; then
+    pkill -KILL -ix "$app" 2>/dev/null || true
+  fi
+fi
+
+# Launch Services can briefly reject a launch while the old process is exiting.
+attempt=0
+while [ "$attempt" -lt 3 ]; do
+  if open -a "$app" >/dev/null 2>&1; then
+    echo "Started $app."
+    exit 0
+  fi
+  attempt=$((attempt + 1))
+  [ "$attempt" -lt 3 ] && sleep 1
+done
+
+echo "mac-restart: failed to launch $app" >&2
+exit 1
