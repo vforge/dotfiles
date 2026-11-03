@@ -85,7 +85,7 @@ Persistent sessions, Vim-style navigation, Tokyo Night status bar, auto-save/res
 ## 🐑 herdr
 
 Workspace manager for AI coding agents, with tmux-style keys and plugins.
-→ Keys: [HERDR.md](HERDR.md)
+→ Keys, remote setup & troubleshooting: [HERDR.md](HERDR.md)
 
 ## 📸 g today
 

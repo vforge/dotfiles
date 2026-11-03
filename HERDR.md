@@ -1,4 +1,4 @@
-# herdr keys
+# herdr
 
 Terminal workspace manager for AI coding agents. Prefix is **`C-a`** (same as tmux), so `C-a h` means press `C-a`, release, then `h`. `S-` means Shift.
 
@@ -103,6 +103,72 @@ herdr saves the layout (workspaces, tabs, panes, folders) on its own and resumes
 `h --session <name>` runs a separate persistent session (e.g. work vs personal) with its own layout; `herdr-save`/`herdr-restore` only handle the default one. `h --remote <ssh-host>` attaches to herdr on another machine.
 
 `herdr-restore` stops the server, which ends every pane's processes, so run it from a plain terminal, not inside herdr. The session it replaces is kept as `saved/before-restore_*`.
+
+---
+
+## Remote setup (SSH)
+
+### Add a remote machine
+
+Run locally, replacing the placeholder with your SSH target (or an alias from your local `~/.ssh/config`):
+
+```bash
+REMOTE='<user>@<host>'
+ssh "$REMOTE"                       # verify SSH access, then exit back to the local shell
+herdr machine add "$REMOTE" --label "Remote" --remote-session default
+herdr                               # Local + Remote appear in the same sidebar
+```
+
+Run `machine add` in an interactive terminal: it can offer to install Herdr on the remote host if missing. On Linux/macOS the installation goes in `~/.local/bin/herdr`. A compatible running server is reused; **decline any prompt to stop/replace an existing server** if its panes must stay alive. A different version alone does not require a restart.
+
+For a remote-only window instead:
+
+```bash
+herdr --remote "$REMOTE"
+# A separate named session:
+herdr --remote "$REMOTE" --session agents
+```
+
+A saved machine targets one session, not every session on the host. Use `--remote-session agents` with `machine add` to select that named session. `C-a q` detaches without ending remote work.
+
+The local client supplies the theme, sidebar layout and keys. The remote server owns its panes, agents, plugins and commands; Herdr does **not** copy local plugins or tools to it. Install the tools/plugins needed there separately. Copying the whole local config is not required for the shared sidebar layout.
+
+### Fix blank remote names / missing sidebar details
+
+These dotfiles use Radar's custom `$group`, `$title_*`, `$logo*` and `$space_label` tokens. If Local looks right but Remote shows only state dots or a branch, the remote server may have no Radar daemon publishing those tokens—even though Herdr knows the agent titles and workspace names.
+
+**Install the same plugin on the remote host and start its daemon live.** Requires Git and Node 18+ on the remote server's PATH:
+
+```bash
+ssh "$REMOTE"
+# The following commands run on the remote host:
+export PATH="$HOME/.local/bin:$PATH"
+herdr plugin install hhdebb/herdr-radar --yes
+herdr plugin action invoke hhdebb.herdr-radar.state-start
+
+# Verify: enabled plugin, plus sort_key / title_* tokens on agent rows
+herdr plugin list
+herdr agent list
+herdr plugin log list --plugin hhdebb.herdr-radar --limit 20
+exit
+```
+
+For an exact match with the local Radar version, add `--ref <local-radar-tag-or-commit>` to the install command. `herdr plugin list` locally shows the recorded ref. The fix was verified with Radar 1.4.9 on Herdr 0.9.5.
+
+Installation configures the plugin; `state-start` activates it on the already-running server. Names, titles and logos should appear automatically. **Do not run `herdr server stop` or kill/restart the remote server**: neither is needed, and both end its pane processes. Config reload is safe but does not start plugin startup hooks. The manifest starts Radar automatically on future normal server starts.
+
+The icon font must be available to the **local terminal** drawing the UI; if local logos already work, no terminal restart or remote font troubleshooting is needed.
+
+### Check or reconnect from the local machine
+
+```bash
+herdr machine list
+herdr machine status "Remote"
+herdr machine reconnect "Remote"      # interactive SSH authentication recovery
+herdr --machine "Remote" agent list   # inspect the remote server, not Local
+```
+
+Selecting Remote in the UI does not retarget CLI commands in an existing pane; use `--machine` explicitly. For richer session reporting/resume, install each agent's integration on the host where it runs, e.g. `herdr integration install claude` or `herdr integration install pi` after setting up that agent. Inspect with `herdr integration status`.
 
 ---
 
