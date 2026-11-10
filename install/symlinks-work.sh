@@ -76,6 +76,7 @@ for pair in hhdebb.herdr-radar:herdr-radar persiyanov.reviewr:herdr-reviewr work
   mkdir -p "$dir"
   link_file "$DOTFILES_ROOT/settings/${pair#*:}.toml.symlink" "$dir/config.toml"
 done
+link_file "$DOTFILES_ROOT/settings/herdr-radar-render.cjs" "$HOME/.config/herdr/plugins/config/hhdebb.herdr-radar/render.cjs"
 
 # memex (transcript search used by the memex herdr plugin)
 mkdir -p "$HOME/.memex"

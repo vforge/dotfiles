@@ -1,2 +1,3 @@
 group_indent = 2
 group_gap = false
+render_hook = "render.cjs"
