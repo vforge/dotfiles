@@ -36,7 +36,8 @@ zinit auto-installs on first launch if missing.
 
 ```bash
 bash install.sh links        # core symlinks
-bash install.sh work-links   # workstation symlinks, herdr plugins, g-today agent
+bash install.sh work-links   # workstation symlinks and g-today agent
+bash install.sh herdr        # Herdr config, plugins, and memex config (macOS/Linux)
 bash install.sh brew mas     # Homebrew + Brewfile (no upgrades), App Store apps
 bash install.sh macos        # macOS defaults
 bash install.sh packages     # apt/pacman packages (Linux)
@@ -85,6 +86,7 @@ Persistent sessions, Vim-style navigation, Tokyo Night status bar, auto-save/res
 ## 🐑 herdr
 
 Workspace manager for AI coding agents, with tmux-style keys and plugins.
+Run `bash install.sh herdr` to link configs and install plugins from `settings/herdr-plugins.txt` (requires Herdr on PATH for plugin installation). Included in the `work` shortcut, separate from `work-links`.
 → Keys, remote setup & troubleshooting: [HERDR.md](HERDR.md)
 
 ## 📸 g today

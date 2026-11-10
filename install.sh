@@ -6,13 +6,14 @@
 #
 # Steps:
 #   links       Core config symlinks (any OS)
-#   work-links  Workstation symlinks, herdr plugins, g-today agent (macOS)
+#   work-links  Workstation symlinks and g-today agent (macOS)
+#   herdr       Herdr config, plugins, and memex config (macOS/Linux)
 #   packages    System packages from packages.txt via apt/pacman (Linux)
 #   brew        Homebrew + Brewfile (macOS)
 #   mas         Mac App Store apps from mac-apps.txt (macOS)
 #   macos       macOS defaults (macOS)
 #   simple      = links packages
-#   work        = links work-links brew mas macos
+#   work        = links work-links herdr brew mas macos
 #
 # Existing files and macOS settings you've customized are kept and reported.
 # --force replaces them (files are backed up first).
@@ -27,7 +28,7 @@ OK_PREFIX="  [\033[00;32mOK\033[0m ]"
 info()  { printf "\r${LOG_PREFIX} $1\n"; }
 ok()    { printf "\r${OK_PREFIX} $1\n"; }
 fail()  { printf "\r  [\033[0;31mFAIL\033[0m] $1\n"; exit 1; }
-usage() { sed -n '3,19p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+usage() { sed -n '/^# Dotfiles installer/,/^# --force/p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 
 OS="$(uname -s)"
 need_mac() { [ "$OS" = "Darwin" ] || { info "skipping $1 (macOS only)"; return 1; }; }
@@ -43,6 +44,11 @@ step_work_links() {
   need_mac work-links || return 0
   info "Installing workstation config symlinks..."
   bash "$SCRIPT_DIR/install/symlinks-work.sh"
+}
+
+step_herdr() {
+  info "Installing Herdr config and plugins..."
+  bash "$SCRIPT_DIR/install/herdr.sh"
 }
 
 step_packages() {
@@ -115,8 +121,8 @@ for arg in "$@"; do
   case "$arg" in
     --force) FORCE=1 ;;
     simple)  STEPS="$STEPS links packages" ;;
-    work)    STEPS="$STEPS links work-links brew mas macos" ;;
-    links|work-links|packages|brew|mas|macos) STEPS="$STEPS $arg" ;;
+    work)    STEPS="$STEPS links work-links herdr brew mas macos" ;;
+    links|work-links|herdr|packages|brew|mas|macos) STEPS="$STEPS $arg" ;;
     *) usage ;;
   esac
 done
@@ -124,8 +130,8 @@ done
 if [ -z "$STEPS" ]; then
   [ -t 0 ] || usage
   case "$OS" in
-    Darwin) CANDIDATES="links work-links brew mas macos" ;;
-    *)      CANDIDATES="links packages" ;;
+    Darwin) CANDIDATES="links work-links herdr brew mas macos" ;;
+    *)      CANDIDATES="links packages herdr" ;;
   esac
   for s in $CANDIDATES; do
     printf "  Run step '%s'? [y/N] " "$s"

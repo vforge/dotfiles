@@ -2,7 +2,9 @@
 
 Terminal workspace manager for AI coding agents. Prefix is **`C-a`** (same as tmux), so `C-a h` means press `C-a`, release, then `h`. `S-` means Shift.
 
-Config: `settings/herdr.toml.symlink` → `~/.config/herdr/config.toml` · Plugins: `settings/herdr-plugins.txt` · Installed by `install/symlinks-work.sh`
+Config: `settings/herdr.toml.symlink` → `~/.config/herdr/config.toml` · Plugins: `settings/herdr-plugins.txt` · Installed by `bash install.sh herdr` (`install/herdr.sh`)
+
+Run `bash install.sh herdr` to link the Herdr/plugin configs, install missing plugins, generate the Claude skill, and set up memex config. Install Herdr first for plugin installation; this step does not install the Herdr binary or stop the server. Included in `work`, but not `work-links`.
 
 `C-a ?` shows every binding in herdr itself.
 
