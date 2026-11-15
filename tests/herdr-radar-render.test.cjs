@@ -5,7 +5,7 @@ const { test } = require('node:test');
 const { title } = require('../settings/herdr-radar-render.cjs');
 
 test('strips OpenCode and Pi prefixes from sidebar titles', () => {
-  for (const prefix of ['OC - ', 'π - ', 'pi - ', 'Pi - ', 'π ! ', '⠋ π - ']) {
+  for (const prefix of ['OC - ', 'OC | ', 'π - ', 'pi - ', 'Pi - ', 'π ! ', '⠋ π - ']) {
     assert.equal(title(`${prefix}Fix tests - repo`), 'Fix tests - repo');
   }
 });
