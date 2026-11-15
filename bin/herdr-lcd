@@ -1,0 +1,183 @@
+#!/usr/bin/env -S uv run --quiet --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pillow"]
+# ///
+"""Herdr agent status board for the Thermalright Trofeo Vision 9.16" LCD (1920x462).
+
+herdr-lcd            poll herdr every 2s, push a frame when something changes
+herdr-lcd --once     push one frame and exit
+herdr-lcd --preview out.png [--demo]   render to a file only (demo = fake agents)
+"""
+
+import json
+import subprocess
+import sys
+import tempfile
+import time
+from datetime import datetime
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFont
+
+DEVICE = "0416:5408"
+W, H = 1920, 462
+POLL = 2.0
+
+BG = "#0A0C11"
+PANEL = "#141821"
+LINE = "#232937"
+TEXT = "#E8ECF4"
+MUTED = "#7A8294"
+STATUS = {  # order = priority on the board
+    "blocked": ("#FF4D6D", "BLOCKED"),
+    "working": ("#FFB547", "WORKING"),
+    "done": ("#3DDC97", "DONE"),
+    "idle": ("#4B5263", "IDLE"),
+}
+HARNESS = {"claude": "#D97757", "opencode": "#8B9CFF", "codex": "#E8ECF4"}
+
+FONTS = "/System/Library/Fonts/"
+
+
+def font(size, weight="Regular", mono=False):
+    f = ImageFont.truetype(FONTS + ("SFNSMono.ttf" if mono else "SFNS.ttf"), size)
+    try:
+        f.set_variation_by_name(weight)
+    except (OSError, ValueError):
+        pass  # NOTE: older FreeType without variable-font support falls back to Regular
+    return f
+
+
+F_NUM = font(96, "Bold")
+F_LABEL = font(20, "Semibold")
+F_TITLE = font(34, "Semibold")
+F_META = font(22, "Medium")
+F_CLOCK = font(44, "Semibold", mono=True)
+F_BIG = font(56, "Bold")
+
+
+def herdr(*args):
+    out = subprocess.run(["herdr", *args], capture_output=True, text=True, check=True).stdout
+    return json.loads(out)["result"]
+
+
+def snapshot():
+    agents = herdr("agent", "list")["agents"]
+    labels = {w["workspace_id"]: w["label"] for w in herdr("workspace", "list")["workspaces"]}
+    return [
+        {
+            "harness": a["agent"],
+            "status": a["agent_status"] if a["agent_status"] in STATUS else "idle",
+            "title": clean_title(a),
+            "where": labels.get(a["workspace_id"], a["workspace_id"]),
+            "seq": a.get("state_change_seq", 0),
+        }
+        for a in agents
+    ]
+
+
+def clean_title(a):
+    t = (a.get("terminal_title_stripped") or "").removeprefix("OC | ").split(" | ")[0].strip()
+    if not t or t.lower() in {"opencode", "claude", "codex", "oc"}:
+        t = a.get("name") or Path(a["cwd"]).name
+    return t
+
+
+def fit(draw, text, f, width):
+    if draw.textlength(text, font=f) <= width:
+        return text
+    while text and draw.textlength(text + "…", font=f) > width:
+        text = text[:-1]
+    return text.rstrip() + "…"
+
+
+def render(agents, now):
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    counts = {s: sum(a["status"] == s for a in agents) for s in STATUS}
+
+    # Left: clock + 2x2 counters
+    d.text((40, 30), "HERDR", font=F_LABEL, fill=MUTED)
+    d.text((40, 56), now.strftime("%H:%M"), font=F_CLOCK, fill=TEXT)
+    d.text((200, 72), now.strftime("%a %d %b").upper(), font=F_LABEL, fill=MUTED)
+    for i, (s, (color, label)) in enumerate(STATUS.items()):
+        x, y = 40 + (i % 2) * 250, 140 + (i // 2) * 155
+        d.rounded_rectangle((x, y, x + 230, y + 140), 22, fill=PANEL)
+        n = counts[s]
+        d.text((x + 24, y + 2), str(n), font=F_NUM, fill=color if n or s == "idle" else LINE)
+        d.ellipse((x + 26, y + 112, x + 38, y + 124), fill=color)
+        d.text((x + 48, y + 106), label, font=F_LABEL, fill=MUTED)
+    d.line((560, 30, 560, H - 30), fill=LINE, width=2)
+
+    # Right: cards for agents that need attention, most urgent and recent first
+    active = sorted(
+        (a for a in agents if a["status"] != "idle"),
+        key=lambda a: (list(STATUS).index(a["status"]), -a["seq"]),
+    )
+    x0, y0, rows, gap = 600, 30, 3, 18
+    cols = 1 if len(active) <= 3 else 2 if len(active) <= 6 else 3  # wide cards while few are active
+    cw = (W - x0 - 40 - gap * (cols - 1)) // cols
+    ch = (H - 2 * y0 - gap * (rows - 1)) // rows
+    if not active:
+        d.text((x0 + 40, H // 2 - 60), "All quiet", font=F_BIG, fill=TEXT)
+        d.text((x0 + 42, H // 2 + 14), f"{len(agents)} agents idle", font=F_META, fill=MUTED)
+        return img
+    slots = cols * rows
+    shown = active if len(active) <= slots else active[: slots - 1]
+    for i, a in enumerate(shown):
+        x, y = x0 + (i % cols) * (cw + gap), y0 + (i // cols) * (ch + gap)
+        color = STATUS[a["status"]][0]
+        d.rounded_rectangle((x, y, x + cw, y + ch), 18, fill=PANEL)
+        d.rounded_rectangle((x, y, x + 8, y + ch), 4, fill=color)
+        d.text((x + 28, y + 16), fit(d, a["title"], F_TITLE, cw - 56), font=F_TITLE, fill=TEXT)
+        hx = x + 28
+        d.ellipse((hx, y + ch - 36, hx + 12, y + ch - 24), fill=HARNESS.get(a["harness"], MUTED))
+        meta = f"{a['harness']}  ·  {a['where']}"
+        d.text((hx + 22, y + ch - 44), fit(d, meta, F_META, cw - 200), font=F_META, fill=MUTED)
+        label = STATUS[a["status"]][1]
+        d.text((x + cw - 24, y + ch - 42), label, font=F_LABEL, fill=color, anchor="ra")
+    if len(active) > slots:
+        x, y = x0 + (slots - 1) % cols * (cw + gap), y0 + (rows - 1) * (ch + gap)
+        d.rounded_rectangle((x, y, x + cw, y + ch), 18, outline=LINE, width=2)
+        d.text((x + cw // 2, y + ch // 2), f"+{len(active) - slots + 1} more", font=F_TITLE, fill=MUTED, anchor="mm")
+    return img
+
+
+def push(img):
+    with tempfile.NamedTemporaryFile(suffix=".png") as f:
+        img.save(f.name)
+        subprocess.run(["trcc", "display", "send-image", DEVICE, f.name], capture_output=True, check=True)
+
+
+DEMO = [
+    {"harness": "claude", "status": "blocked", "title": "Approve rm -rf in odyssey build dir", "where": "odyssey", "seq": 9},
+    {"harness": "claude", "status": "working", "title": "Thermalright LCD status board", "where": "Dev Hub Vault", "seq": 8},
+    {"harness": "opencode", "status": "working", "title": "UX platform daily update", "where": "ux-platform", "seq": 7},
+    {"harness": "codex", "status": "done", "title": "Reload source command skills", "where": "claude-skills-to-codex", "seq": 6},
+] + [{"harness": "claude", "status": "idle", "title": "x", "where": "x", "seq": 0}] * 43
+
+
+def main():
+    args = sys.argv[1:]
+    if "--preview" in args:
+        out = args[args.index("--preview") + 1]
+        render(DEMO if "--demo" in args else snapshot(), datetime.now()).save(out)
+        return
+    last = None
+    while True:
+        try:
+            agents, now = snapshot(), datetime.now()
+            key = (now.strftime("%H:%M"), [(a["status"], a["title"], a["where"]) for a in agents])
+            if key != last:
+                push(render(agents, now))
+                last = key
+        except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
+            print(f"herdr-lcd: {e}", file=sys.stderr)  # herdr/trcc hiccup: keep polling
+        if "--once" in args:
+            return
+        time.sleep(POLL)
+
+
+if __name__ == "__main__":
+    main()
