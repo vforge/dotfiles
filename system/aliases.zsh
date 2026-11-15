@@ -14,6 +14,14 @@ alias g='git'
 
 alias h='herdr'
 
+alias oc='opencode'
+
+# Claude Code with permission prompts off, inside the current repo's dev
+# container (rootless Podman; .devcontainer needs --userns=keep-id in runArgs).
+# HERDR_AGENT keeps Herdr's agent detection working through the exec wrapper.
+# Start the container first: devcontainer up --docker-path podman --workspace-folder .
+alias cdc='HERDR_AGENT=claude devcontainer exec --docker-path podman --workspace-folder . claude --dangerously-skip-permissions'
+
 # Ghostty sets TERM=xterm-ghostty, but many remote machines do not have that
 # terminfo entry installed. SSH sends TERM as the pty terminal type, so remote
 # ncurses tools (tmux, top, vim, etc.) can fail with:
